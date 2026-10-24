@@ -85,7 +85,13 @@ for (const type of [chromium, firefox, webkit])
       waitUntil: "domcontentloaded",
     })
     await delay.started
-    await page.keyboard.press("Control+k")
+    await page.keyboard.press(
+      await page.evaluate(() =>
+        /Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent)
+          ? "Meta+k"
+          : "Control+k"
+      )
+    )
     delay.release()
     await page.locator("[data-slot=command-input]:visible").waitFor()
     assert.equal(
