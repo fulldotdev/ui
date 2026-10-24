@@ -36,6 +36,8 @@ const reactPreviewPort = process.env.REACT_PREVIEW_PORT ?? "4322"
 
 export default defineConfig({
   site: "https://ui.full.dev",
+  // Match the marketing sites: render the first view without a CSS request.
+  build: { inlineStylesheets: "always" },
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
