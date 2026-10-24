@@ -257,7 +257,7 @@ for (const type of [chromium, firefox, webkit]) {
       assert.ok((await page.evaluate(() => window.__menuClicks)).every(Boolean))
     })
 
-  for (const action of ["open", "latest-close", "exit", "swap"])
+  for (const action of ["open", "click", "latest-close", "exit", "swap"])
     test(`${type.name()} pending programmatic navigation request: ${action}`, async (t) => {
       const browser = await type.launch()
       t.after(() => browser.close())
@@ -283,27 +283,34 @@ for (const type of [chromium, firefox, webkit]) {
       })
       await page.goto(origin + "/pending/", { waitUntil: "domcontentloaded" })
       await started
-      await page.evaluate((close) => {
-        document.addEventListener(
-          "astro:page-load",
-          () => {
-            const root = document.querySelector('[data-slot="navigation-menu"]')
-            root.dispatchEvent(
-              new CustomEvent("navigation-menu:set", {
-                detail: { value: "products" },
-              })
-            )
-            if (close)
+      if (action === "click")
+        await page
+          .getByRole("button", { name: "Products", exact: true })
+          .click()
+      else
+        await page.evaluate((close) => {
+          document.addEventListener(
+            "astro:page-load",
+            () => {
+              const root = document.querySelector(
+                '[data-slot="navigation-menu"]'
+              )
               root.dispatchEvent(
                 new CustomEvent("navigation-menu:set", {
-                  detail: { value: null },
+                  detail: { value: "products" },
                 })
               )
-          },
-          { once: true }
-        )
-        document.dispatchEvent(new Event("astro:page-load"))
-      }, action === "latest-close")
+              if (close)
+                root.dispatchEvent(
+                  new CustomEvent("navigation-menu:set", {
+                    detail: { value: null },
+                  })
+                )
+            },
+            { once: true }
+          )
+          document.dispatchEvent(new Event("astro:page-load"))
+        }, action === "latest-close")
       if (action === "exit")
         await page.setViewportSize({ width: 390, height: 900 })
       if (action === "swap")
@@ -312,7 +319,7 @@ for (const type of [chromium, firefox, webkit]) {
         )
       release()
       const link = page.getByRole("link", { name: "Product one", exact: true })
-      if (action === "open") await link.waitFor()
+      if (action === "open" || action === "click") await link.waitFor()
       else {
         await page.waitForLoadState("networkidle")
         if (action === "exit")
