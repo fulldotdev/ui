@@ -25,7 +25,7 @@ const imageProps = {
   alt: alt ?? "",
   class: cn("h-auto w-full", className),
   inferSize,
-}
+} as ComponentProps<typeof AstroImage>
 const pictureProps = {
   ...imageProps,
   formats,
@@ -34,12 +34,9 @@ const pictureProps = {
     ...pictureAttributes,
     class: cn("contents [&>source]:hidden", pictureAttributes?.class),
   },
-}
+} as ComponentProps<typeof AstroPicture>
+const usePicture = !!formats?.length
 ---
 
-{src &&
-  (formats?.length ? (
-    <AstroPicture {...(pictureProps as ComponentProps<typeof AstroPicture>)} />
-  ) : (
-    <AstroImage {...(imageProps as ComponentProps<typeof AstroImage>)} />
-  ))}
+{src && usePicture && <AstroPicture {...pictureProps} />}
+{src && !usePicture && <AstroImage {...imageProps} />}
