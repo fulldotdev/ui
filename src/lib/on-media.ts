@@ -29,11 +29,13 @@ export function onMedia<T>(
 
   const update = async () => {
     const current = ++epoch
-    pendingClick = undefined
-    pendingEvent = undefined
     cleanup?.()
     cleanup = undefined
-    if (!media.matches || disposed) return
+    if (!media.matches || disposed) {
+      pendingClick = undefined
+      pendingEvent = undefined
+      return
+    }
     try {
       const module = await load()
       if (disposed || !media.matches || current !== epoch) return
