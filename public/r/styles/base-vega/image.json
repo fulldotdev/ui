@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "image",
+  "title": "Image",
+  "description": "An optional image with responsive picture formats for existing Astro blocks.",
+  "files": [
+    {
+      "path": "src/components/ui/image/image.astro",
+      "content": "---\nimport { Image as AstroImage, Picture as AstroPicture } from \"astro:assets\"\nimport type { ComponentProps } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = Partial<ComponentProps<typeof AstroPicture>> & {\n  inferSize?: boolean\n}\n\nconst {\n  class: className,\n  alt,\n  src,\n  inferSize = true,\n  formats,\n  fallbackFormat,\n  pictureAttributes,\n  ...props\n} = Astro.props\n\nconst imageProps = {\n  ...props,\n  src,\n  alt: alt ?? \"\",\n  class: cn(\"h-auto w-full\", className),\n  inferSize,\n} as ComponentProps<typeof AstroImage>\nconst pictureProps = {\n  ...imageProps,\n  formats,\n  fallbackFormat,\n  pictureAttributes: {\n    ...pictureAttributes,\n    class: cn(\"contents [&>source]:hidden\", pictureAttributes?.class),\n  },\n} as ComponentProps<typeof AstroPicture>\nconst usePicture = !!formats?.length\n---\n\n{src && usePicture && <AstroPicture {...pictureProps} />}\n{src && !usePicture && <AstroImage {...imageProps} />}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/image/index.ts",
+      "content": "export { default as Image } from \"./image.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/image/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}
