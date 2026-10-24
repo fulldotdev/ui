@@ -257,6 +257,79 @@ for (const type of [chromium, firefox, webkit]) {
       assert.ok((await page.evaluate(() => window.__menuClicks)).every(Boolean))
     })
 
+  for (const action of ["open", "latest-close", "exit", "swap"])
+    test(`${type.name()} pending programmatic navigation request: ${action}`, async (t) => {
+      const browser = await type.launch()
+      t.after(() => browser.close())
+      const page = await browser.newPage({
+        viewport: { width: 1440, height: 900 },
+      })
+      let release
+      const pending = new Promise((done) => {
+        release = done
+      })
+      let intercepted
+      const started = new Promise((done) => {
+        intercepted = done
+      })
+      await page.route("**/*.js", async (route) => {
+        const response = await route.fetch()
+        const body = await response.text()
+        if (body.includes("NavigationMenu requires")) {
+          intercepted()
+          await pending
+        }
+        await route.fulfill({ response, body })
+      })
+      await page.goto(origin + "/pending/", { waitUntil: "domcontentloaded" })
+      await started
+      await page.evaluate((close) => {
+        document.addEventListener(
+          "astro:page-load",
+          () => {
+            const root = document.querySelector('[data-slot="navigation-menu"]')
+            root.dispatchEvent(
+              new CustomEvent("navigation-menu:set", {
+                detail: { value: "products" },
+              })
+            )
+            if (close)
+              root.dispatchEvent(
+                new CustomEvent("navigation-menu:set", {
+                  detail: { value: null },
+                })
+              )
+          },
+          { once: true }
+        )
+        document.dispatchEvent(new Event("astro:page-load"))
+      }, action === "latest-close")
+      if (action === "exit")
+        await page.setViewportSize({ width: 390, height: 900 })
+      if (action === "swap")
+        await page.evaluate(() =>
+          document.dispatchEvent(new Event("astro:before-swap"))
+        )
+      release()
+      const link = page.getByRole("link", { name: "Product one", exact: true })
+      if (action === "open") await link.waitFor()
+      else {
+        await page.waitForLoadState("networkidle")
+        if (action === "exit")
+          await page.setViewportSize({ width: 1440, height: 900 })
+        if (action === "swap")
+          await page.evaluate(() =>
+            document.dispatchEvent(new Event("astro:page-load"))
+          )
+        await page.waitForLoadState("networkidle")
+        assert.equal(await link.isVisible(), false)
+        await page
+          .getByRole("button", { name: "Products", exact: true })
+          .click()
+        await link.waitFor()
+      }
+    })
+
   for (const action of ["sidebar", "page-load", "exit"])
     test(`${type.name()} pending programmatic dialog request: ${action}`, async (t) => {
       const browser = await type.launch()
