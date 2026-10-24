@@ -4,44 +4,42 @@ import type { ComponentProps } from "astro/types"
 
 import { cn } from "@/lib/utils"
 
-type Props = Partial<ComponentProps<typeof AstroImage>> &
-  Pick<
-    Partial<ComponentProps<typeof AstroPicture>>,
-    "formats" | "fallbackFormat" | "pictureAttributes"
-  >
+type Props = Partial<ComponentProps<typeof AstroPicture>> & {
+  inferSize?: boolean
+}
 
 const {
   class: className,
-  alt = "",
+  alt,
   src,
+  inferSize = true,
   formats,
   fallbackFormat,
   pictureAttributes,
   ...props
 } = Astro.props
+
+const imageProps = {
+  ...props,
+  src,
+  alt: alt ?? "",
+  class: cn("h-auto w-full", className),
+  inferSize,
+}
+const pictureProps = {
+  ...imageProps,
+  formats,
+  fallbackFormat,
+  pictureAttributes: {
+    ...pictureAttributes,
+    class: cn("contents [&>source]:hidden", pictureAttributes?.class),
+  },
+}
 ---
 
 {src &&
   (formats?.length ? (
-    <AstroPicture
-      {...(props as ComponentProps<typeof AstroPicture>)}
-      src={src}
-      alt={alt}
-      class={cn("h-auto w-full", className)}
-      inferSize={props.inferSize ?? true}
-      formats={formats}
-      fallbackFormat={fallbackFormat}
-      pictureAttributes={{
-        ...pictureAttributes,
-        class: cn("contents [&>source]:hidden", pictureAttributes?.class),
-      }}
-    />
+    <AstroPicture {...(pictureProps as ComponentProps<typeof AstroPicture>)} />
   ) : (
-    <AstroImage
-      {...(props as ComponentProps<typeof AstroImage>)}
-      src={src}
-      alt={alt}
-      class={cn("h-auto w-full", className)}
-      inferSize={props.inferSize ?? true}
-    />
+    <AstroImage {...(imageProps as ComponentProps<typeof AstroImage>)} />
   ))}
