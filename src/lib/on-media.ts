@@ -14,6 +14,15 @@ export function onMedia<T>(
   let pendingClick: HTMLElement | undefined
   let pendingEvent: CustomEvent | undefined
 
+  const matches = () => {
+    const matching = window.matchMedia(query).matches
+    if (!matching) {
+      pendingClick = undefined
+      pendingEvent = undefined
+    }
+    return matching
+  }
+
   const replayClick = () => {
     const target = pendingClick
     const event = pendingEvent
@@ -29,14 +38,16 @@ export function onMedia<T>(
 
   const update = async () => {
     const current = ++epoch
-    pendingClick = undefined
-    pendingEvent = undefined
     cleanup?.()
     cleanup = undefined
-    if (!media.matches || disposed) return
+    if (!matches() || disposed) {
+      pendingClick = undefined
+      pendingEvent = undefined
+      return
+    }
     try {
       const module = await load()
-      if (disposed || !media.matches || current !== epoch) return
+      if (disposed || current !== epoch || !matches()) return
       cleanup = mount(module)
       replayClick()
     } catch (error) {
@@ -48,13 +59,7 @@ export function onMedia<T>(
     }
   }
   const click = (event: Event) => {
-    if (
-      !trigger ||
-      cleanup ||
-      disposed ||
-      !media.matches ||
-      event.defaultPrevented
-    )
+    if (!trigger || cleanup || disposed || !matches() || event.defaultPrevented)
       return
     if (!(event.target instanceof Element)) return
     const target = event.target.closest<HTMLElement>(trigger.selector)
@@ -64,7 +69,7 @@ export function onMedia<T>(
     event.preventDefault()
   }
   const request = (event: Event) => {
-    if (cleanup || disposed || !media.matches || event.target !== trigger?.root)
+    if (cleanup || disposed || !matches() || event.target !== trigger?.root)
       return
     if (!(event instanceof CustomEvent)) return
     pendingEvent = event
