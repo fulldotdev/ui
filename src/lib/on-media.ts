@@ -39,7 +39,12 @@ export function onMedia<T>(
     }
     try {
       const module = await load()
-      if (disposed || !matches() || current !== epoch) return
+      if (disposed || current !== epoch) return
+      if (!matches()) {
+        pendingClick = undefined
+        pendingEvent = undefined
+        return
+      }
       cleanup = mount(module)
       replayClick()
     } catch (error) {
