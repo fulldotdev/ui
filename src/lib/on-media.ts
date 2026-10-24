@@ -8,12 +8,20 @@ export function onMedia<T>(
   trigger?: Trigger
 ) {
   const media = window.matchMedia(query)
-  const matches = () => window.matchMedia(query).matches
   let disposed = false
   let epoch = 0
   let cleanup: (() => void) | undefined
   let pendingClick: HTMLElement | undefined
   let pendingEvent: CustomEvent | undefined
+
+  const matches = () => {
+    const matching = window.matchMedia(query).matches
+    if (!matching) {
+      pendingClick = undefined
+      pendingEvent = undefined
+    }
+    return matching
+  }
 
   const replayClick = () => {
     const target = pendingClick
@@ -39,12 +47,7 @@ export function onMedia<T>(
     }
     try {
       const module = await load()
-      if (disposed || current !== epoch) return
-      if (!matches()) {
-        pendingClick = undefined
-        pendingEvent = undefined
-        return
-      }
+      if (disposed || current !== epoch || !matches()) return
       cleanup = mount(module)
       replayClick()
     } catch (error) {

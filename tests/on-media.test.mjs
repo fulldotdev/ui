@@ -146,69 +146,83 @@ for (const stale of [false, true])
     })
 
 for (const action of ["click", "request"])
-  test(`discards ${action} when import observes exit before its notification`, async () => {
-    const previous = {
-      window: globalThis.window,
-      Element: globalThis.Element,
-      MouseEvent: globalThis.MouseEvent,
-    }
-    class Element extends EventTarget {
-      isConnected = true
-      closest() {
-        return this
+  for (const observer of ["import", "click", "request"])
+    test(`discards ${action} when ${observer} observes exit before its notification`, async () => {
+      const previous = {
+        window: globalThis.window,
+        Element: globalThis.Element,
+        MouseEvent: globalThis.MouseEvent,
       }
-      contains(target) {
-        return target === this
+      class Element extends EventTarget {
+        isConnected = true
+        closest() {
+          return this
+        }
+        contains(target) {
+          return target === this
+        }
       }
-    }
-    const media = new EventTarget()
-    media.matches = true
-    let current = true
-    let reads = 0
-    globalThis.window = {
-      matchMedia: () => (reads++ === 0 ? media : { matches: current }),
-    }
-    globalThis.Element = Element
-    globalThis.MouseEvent = Event
-    const root = new Element()
-    const received = []
-    const resolves = []
-    let mounts = 0
-    const event = action === "click" ? "click" : "dialog:set"
-    const receive = (event) => received.push(event.detail?.open ?? "click")
-    const activate = () =>
-      root.dispatchEvent(
-        action === "click"
-          ? new Event("click", { cancelable: true })
-          : new CustomEvent("dialog:set", { detail: { open: true } })
+      const media = new EventTarget()
+      media.matches = true
+      let current = true
+      let reads = 0
+      globalThis.window = {
+        matchMedia: () => (reads++ === 0 ? media : { matches: current }),
+      }
+      globalThis.Element = Element
+      globalThis.MouseEvent = Event
+      const root = new Element()
+      const received = []
+      const resolves = []
+      let mounts = 0
+      const event = action === "click" ? "click" : "dialog:set"
+      const receive = (event) => received.push(event.detail?.open ?? "click")
+      const activate = () =>
+        root.dispatchEvent(
+          action === "click"
+            ? new Event("click", { cancelable: true })
+            : new CustomEvent("dialog:set", { detail: { open: true } })
+        )
+      const dispose = onMedia(
+        "mobile",
+        () => new Promise((done) => resolves.push(done)),
+        () => {
+          mounts++
+          root.addEventListener(event, receive)
+          return () => root.removeEventListener(event, receive)
+        },
+        { root, selector: "button", event: "dialog:set" }
       )
-    const dispose = onMedia(
-      "mobile",
-      () => new Promise((done) => resolves.push(done)),
-      () => {
-        mounts++
-        root.addEventListener(event, receive)
-        return () => root.removeEventListener(event, receive)
-      },
-      { root, selector: "button", event: "dialog:set" }
-    )
-    try {
-      activate()
-      current = false
-      resolves.shift()({})
-      await Promise.resolve()
-      assert.equal(mounts, 0)
-      assert.deepEqual(received, [])
-      current = true
-      media.dispatchEvent(new Event("change"))
-      resolves.shift()({})
-      await Promise.resolve()
-      assert.equal(mounts, 1)
-      assert.deepEqual(received, [])
-      activate()
-      assert.deepEqual(received, [action === "click" ? "click" : true])
-    } finally {
-      dispose()
-      Object.assign(globalThis, previous)
-    }
-  })
+      try {
+        activate()
+        current = false
+        if (observer === "import") {
+          resolves.shift()({})
+          await Promise.resolve()
+        } else {
+          root.dispatchEvent(
+            observer === "click"
+              ? new Event("click", { cancelable: true })
+              : new CustomEvent("dialog:set", { detail: { open: false } })
+          )
+        }
+        assert.equal(mounts, 0)
+        assert.deepEqual(received, [])
+        current = true
+        media.dispatchEvent(new Event("change"))
+        if (observer !== "import") {
+          resolves.shift()({})
+          await Promise.resolve()
+          assert.equal(mounts, 0)
+        }
+        resolves.shift()({})
+        await Promise.resolve()
+        assert.equal(mounts, 1)
+        assert.deepEqual(received, [])
+        activate()
+        assert.deepEqual(received, [action === "click" ? "click" : true])
+      } finally {
+        dispose()
+        Object.assign(globalThis, previous)
+      }
+    })
