@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils"
 import NavigationMenuPositioner from "./navigation-menu-positioner.astro"
 
 type Props = HTMLAttributes<"nav"> & {
+  // No effect: the controller starts with the page. Kept so installs that
+  // pass it still type-check.
   media?: string
   mountStrategy?: "lazy" | "eager"
   delayOpen?: number
@@ -43,7 +45,6 @@ const {
   {...props}
   aria-label={ariaLabel}
   data-slot="navigation-menu"
-  data-media={media}
   data-mount-strategy={mountStrategy}
   data-delay-open={delayOpen}
   data-delay-close={delayClose}
@@ -65,36 +66,15 @@ const {
 </nav>
 
 <script>
-  import { onMedia } from "@/lib/on-media"
+  import { create } from "@data-slot/navigation-menu"
 
-  const roots = new Map<Element, () => void>()
-  const initialize = () => {
-    for (const root of document.querySelectorAll<HTMLElement>(
-      '[data-slot="navigation-menu"]'
-    )) {
-      if (roots.has(root)) continue
-      roots.set(
-        root,
-        onMedia(
-          root.dataset.media ?? "all",
-          () => import("@data-slot/navigation-menu"),
-          ({ createNavigationMenu }) => {
-            const controller = createNavigationMenu(root)
-            return () => controller.destroy()
-          },
-          {
-            root,
-            selector: '[data-slot="navigation-menu-trigger"]',
-            event: "navigation-menu:set",
-          }
-        )
-      )
-    }
-  }
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
   initialize()
+  document.addEventListener("astro:after-swap", initialize)
   document.addEventListener("astro:page-load", initialize)
   document.addEventListener("astro:before-swap", () => {
-    for (const dispose of roots.values()) dispose()
-    roots.clear()
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
   })
 </script>

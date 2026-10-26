@@ -79,8 +79,6 @@ const {
   ...props
 } = Astro.props
 
-const desktopQuery = fold === "xl" ? "(min-width: 80rem)" : "(min-width: 64rem)"
-const mobileQuery = fold === "xl" ? "(width < 80rem)" : "(width < 64rem)"
 const desktopClass = fold === "xl" ? "xl:flex" : "lg:flex"
 const mobileClass = fold === "xl" ? "xl:hidden" : "lg:hidden"
 ---
@@ -99,7 +97,6 @@ const mobileClass = fold === "xl" ? "xl:hidden" : "lg:hidden"
       </Logo>
     </HeaderGroup>
     <NavigationMenu
-      media={desktopQuery}
       aria-label={navigationLabel}
       class={cn(
         "absolute left-1/2 hidden max-w-none -translate-x-1/2",
@@ -191,7 +188,7 @@ const mobileClass = fold === "xl" ? "xl:hidden" : "lg:hidden"
         </Button>
       ))}
     </HeaderGroup>
-    <Sheet media={mobileQuery} class={mobileClass}>
+    <Sheet class={mobileClass}>
       <SheetTrigger
         variant="ghost"
         size="icon-sm"
@@ -267,3 +264,27 @@ const mobileClass = fold === "xl" ? "xl:hidden" : "lg:hidden"
     </Sheet>
   </HeaderContainer>
 </Header>
+
+<script>
+  // Close a menu that the header hides at its fold breakpoint, so it does not
+  // stay open, or keep the page from scrolling, while hidden.
+  const hidden = (element: Element) => element.getClientRects().length === 0
+  const close = () => {
+    for (const sheet of document.querySelectorAll(
+      '[data-slot="header"] [data-slot="dialog"]'
+    ))
+      if (hidden(sheet))
+        sheet.dispatchEvent(
+          new CustomEvent("dialog:set", { detail: { open: false } })
+        )
+    for (const menu of document.querySelectorAll(
+      '[data-slot="header"] [data-slot="navigation-menu"]'
+    ))
+      if (hidden(menu))
+        menu.dispatchEvent(
+          new CustomEvent("navigation-menu:set", { detail: { value: null } })
+        )
+  }
+  for (const query of ["(min-width: 64rem)", "(min-width: 80rem)"])
+    matchMedia(query).addEventListener("change", close)
+</script>

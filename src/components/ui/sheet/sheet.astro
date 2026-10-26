@@ -2,6 +2,8 @@
 import type { HTMLAttributes } from "astro/types"
 
 type Props = HTMLAttributes<"div"> & {
+  // No effect: the controller starts with the page. Kept so installs that
+  // pass it still type-check.
   media?: string
   defaultOpen?: boolean
   closeOnClickOutside?: boolean
@@ -21,7 +23,6 @@ const {
 ---
 
 <div
-  data-media={media}
   data-slot="dialog"
   class={className}
   data-default-open={defaultOpen}
@@ -34,7 +35,15 @@ const {
 </div>
 
 <script>
-  import { initializeDialogs } from "@/lib/dialog"
+  import { create } from "@data-slot/dialog"
 
-  initializeDialogs()
+  const controllers: ReturnType<typeof create> = []
+  const initialize = () => controllers.push(...create())
+  initialize()
+  document.addEventListener("astro:after-swap", initialize)
+  document.addEventListener("astro:page-load", initialize)
+  document.addEventListener("astro:before-swap", () => {
+    for (const controller of controllers) controller.destroy()
+    controllers.length = 0
+  })
 </script>
