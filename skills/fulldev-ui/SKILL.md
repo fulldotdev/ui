@@ -22,7 +22,7 @@ and the shadcn skill differ, this skill wins.
 
 For Shopify themes, use `https://ui.full.dev/r/liquid/<name>.json` with `shadcn add`; `components` installs the full set. Read [Liquid](https://ui.full.dev/liquid/docs/installation.md). These are universal items with explicit theme targets. Do not run `shadcn init` or add Tailwind to the theme. Render `ui` once in each layout head before theme overrides and other modules. Keep `content_for_header`; load `custom.css` after it. Existing Shopify adapters use `runtime: false` and the exported lifecycle with their own import map. Installed UI stays unchanged; theme settings and commerce code stay local. Native source supports Vega, not the Tailwind preset generator.
 
-For storefront parts, use the library first: `number-field` for quantities, `swatch` in option toggles and filter labels, and `carousel-indicator` thumbnails for a product gallery. Product cards, cart lines and filter panels are compositions of card, item, field, checkbox and badge in the theme.
+For storefront parts, use the library first: `number-field` for quantities, `swatch` in option toggles and filter labels, and `carousel-indicator` thumbnails for a product gallery, whose root has `data-slides='single'`. Product cards, cart lines and filter panels are compositions of card, item, field, checkbox and badge in the theme.
 
 ## Astro setup
 

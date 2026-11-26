@@ -178,7 +178,7 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
               <button type="button" data-slot="number-field-increment" data-button data-variant="ghost" data-size="icon-xs" aria-label="Increase">+</button>
             </div>
           </div>
-          <section data-slot="carousel" aria-label="Product images">
+          <section data-slot="carousel" data-slides="single" aria-label="Product images" style="width:300.6px;--gutter:0px">
             <div data-slot="carousel-content">
               <div data-slot="carousel-item" id="gallery-1">One</div>
               <div data-slot="carousel-item" id="gallery-2">Two</div>
@@ -241,6 +241,17 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
           .locator('[data-slot="carousel-indicator"][aria-current="true"]')
           .getAttribute("aria-label")
       assert.equal(await current(), "Show image 1")
+      // One slide at a time: a sliver of the next one in a fractional width stays hidden.
+      const exposed = () =>
+        root
+          .locator('[data-slot="carousel-item"]')
+          .evaluateAll((items) =>
+            items.map(
+              (item) =>
+                !item.inert && item.getAttribute("aria-hidden") !== "true"
+            )
+          )
+      assert.deepEqual(await exposed(), [true, false])
       await root.getByRole("link", { name: "Show image 2" }).click()
       await page.waitForFunction(
         () =>
@@ -251,6 +262,7 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
             ?.getAttribute("aria-current") === "true"
       )
       assert.equal(await current(), "Show image 2")
+      assert.deepEqual(await exposed(), [false, true])
       // A plain click scrolls the carousel instead of following the link.
       assert.equal(new URL(page.url()).hash, "")
     } finally {
