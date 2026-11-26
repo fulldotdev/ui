@@ -197,8 +197,13 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
       const root = page.locator("#storefront-regression")
       await root.locator('[data-slot="number-field"][data-enhanced]').waitFor()
       const increase = root.getByRole("button", { name: "Increase" })
-      for (let click = 0; click < 3; click++) await increase.click()
-      await root.getByRole("button", { name: "Decrease" }).click()
+      const decrease = root.getByRole("button", { name: "Decrease" })
+      // As in Base UI, a button is disabled at its bound.
+      assert.equal(await decrease.isDisabled(), true)
+      for (let click = 0; click < 2; click++) await increase.click()
+      assert.equal(await increase.isDisabled(), true)
+      await decrease.click()
+      assert.equal(await increase.isDisabled(), false)
       assert.equal(
         await root.getByRole("spinbutton", { name: "Quantity" }).inputValue(),
         "2"
@@ -219,7 +224,6 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
         await root.getByRole("spinbutton", { name: "Quantity" }).inputValue(),
         "3"
       )
-      // The third click is past max, so it changes nothing and fires nothing.
       assert.deepEqual(await page.evaluate(() => window.quantityEvents), [
         "input 2",
         "change 2",

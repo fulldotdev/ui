@@ -14,8 +14,8 @@ function CarouselIndicator({
 }: React.ComponentProps<"button"> & {
   index: number
 }) {
-  const { api } = useCarousel()
-  const [selected, setSelected] = React.useState(0)
+  const { api, opts } = useCarousel()
+  const [selected, setSelected] = React.useState(opts?.startIndex ?? 0)
 
   React.useEffect(() => {
     if (!api) return
@@ -45,7 +45,9 @@ function CarouselIndicator({
       )}
       onClick={(event) => {
         onClick?.(event)
-        if (!event.defaultPrevented) api?.scrollTo(index)
+        if (event.defaultPrevented) return
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)")
+        api?.scrollTo(index, reduce.matches)
       }}
       {...props}
     />

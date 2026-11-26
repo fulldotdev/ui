@@ -165,11 +165,28 @@ function initializeToaster({ createToast }, root) {
 }
 
 // A number field's buttons step its native input, as its arrow keys do, and fire the input and change
-// events that typing fires, so a form or cart script sees one kind of change. Clicks are read on the
-// root, so buttons and an input that a cart refresh replaces keep working. Without JavaScript the
-// input still works on its own.
+// events that typing fires, so a form or cart script sees one kind of change. As in Base UI, they are
+// disabled at the input's bounds and while it is disabled or read-only. Events are read on the root,
+// so buttons and an input that a cart refresh replaces keep working. Without JavaScript the input
+// still works on its own.
 function initializeNumberField(_, root) {
   const events = new AbortController();
+  const buttons = () =>
+    root.querySelectorAll('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]');
+  const sync = () => {
+    const input = root.querySelector('input');
+    if (!input) return;
+    const value = input.valueAsNumber;
+    const locked = input.disabled || input.readOnly;
+    for (const button of buttons()) {
+      const decrement = button.dataset.slot === 'number-field-decrement';
+      const bound = decrement ? input.min : input.max;
+      button.disabled =
+        locked ||
+        (bound !== '' && !Number.isNaN(value) && (decrement ? value <= Number(bound) : value >= Number(bound)));
+    }
+  };
+  const options = { signal: events.signal };
   root.addEventListener(
     'click',
     (event) => {
@@ -191,9 +208,19 @@ function initializeNumberField(_, root) {
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
     },
-    { signal: events.signal },
+    options,
   );
-  return { destroy: () => events.abort() };
+  root.addEventListener('input', sync, options);
+  root.addEventListener('change', sync, options);
+  // A form reset restores the input after the event.
+  root.closest('form')?.addEventListener('reset', () => setTimeout(sync), options);
+  sync();
+  return {
+    destroy() {
+      events.abort();
+      for (const button of buttons()) button.disabled = false;
+    },
+  };
 }
 
 // Each entry loads its data-slot package, then starts one root with it and returns a controller

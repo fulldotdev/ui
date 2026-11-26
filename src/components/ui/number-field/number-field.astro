@@ -1,22 +1,56 @@
 ---
-import type { ComponentProps } from "astro/types"
+import type { HTMLAttributes } from "astro/types"
 
 import { cn } from "@/lib/utils"
-import { InputGroup } from "@/components/ui/input-group"
 
-type Props = ComponentProps<typeof InputGroup>
+type Props = HTMLAttributes<"div">
 
 const { class: className, ...props } = Astro.props
 ---
 
-<InputGroup data-slot="number-field" class={cn("w-32", className)} {...props}>
+<div
+  data-slot="number-field"
+  role="group"
+  class={cn(
+    "cn-fd-number-field group/input-group relative flex w-32 min-w-0 items-center outline-none",
+    className
+  )}
+  {...props}
+>
   <slot />
-</InputGroup>
+</div>
 
 <script>
   // The buttons step the native input as its arrow keys do and fire the
-  // input and change events that typing fires. Without JavaScript the input
-  // still works on its own.
+  // input and change events that typing fires. As in Base UI, they are left
+  // out of the tab order, where the input's arrow keys step, and disabled at
+  // the input's bounds or while it is disabled or read-only. Without
+  // JavaScript the input still works on its own.
+  const buttons = (root: Element) =>
+    root.querySelectorAll<HTMLButtonElement>(
+      '[data-slot="number-field-decrement"], [data-slot="number-field-increment"]'
+    )
+  const sync = (root: Element) => {
+    const input = root.querySelector("input")
+    if (!input) return
+    const value = input.valueAsNumber
+    const locked = input.disabled || input.readOnly
+    for (const button of buttons(root)) {
+      if (button.dataset.manualDisabled === "true") continue
+      const decrement = button.dataset.slot === "number-field-decrement"
+      const bound = decrement ? input.min : input.max
+      button.disabled =
+        locked ||
+        (bound !== "" &&
+          !Number.isNaN(value) &&
+          (decrement ? value <= Number(bound) : value >= Number(bound)))
+    }
+  }
+  const syncAll = (scope: ParentNode = document) => {
+    for (const root of scope.querySelectorAll('[data-slot="number-field"]'))
+      sync(root)
+  }
+
   if (!document.documentElement.dataset.numberFieldBound) {
     document.documentElement.dataset.numberFieldBound = "true"
 
@@ -29,11 +63,9 @@ const { class: className, ...props } = Astro.props
       )
       if (!(button instanceof HTMLButtonElement) || button.disabled) return
 
-      const input = button
-        .closest('[data-slot="number-field"]')
-        ?.querySelector("input")
-      if (!(input instanceof HTMLInputElement)) return
-      if (input.disabled || input.readOnly) return
+      const root = button.closest('[data-slot="number-field"]')
+      const input = root?.querySelector("input")
+      if (!root || !input || input.disabled || input.readOnly) return
 
       const value = input.value
       try {
@@ -47,5 +79,19 @@ const { class: className, ...props } = Astro.props
       input.dispatchEvent(new Event("input", { bubbles: true }))
       input.dispatchEvent(new Event("change", { bubbles: true }))
     })
+    for (const type of ["input", "change"])
+      document.addEventListener(type, (event) => {
+        const root =
+          event.target instanceof Element &&
+          event.target.closest('[data-slot="number-field"]')
+        if (root) sync(root)
+      })
+    // A form reset restores the inputs after the event.
+    document.addEventListener("reset", (event) => {
+      const form = event.target
+      if (form instanceof HTMLFormElement) setTimeout(() => syncAll(form))
+    })
+    document.addEventListener("astro:page-load", () => syncAll())
   }
+  syncAll()
 </script>

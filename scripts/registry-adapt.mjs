@@ -107,6 +107,21 @@ const ADAPTED = {
       ],
     ],
   ],
+  // A number field is an input group whose step buttons are disabled at its
+  // bounds, so only a disabled input dims the field.
+  "cn-fd-number-field": [
+    "cn-input-group",
+    [
+      [
+        /(has-\[>\[data-align=inline-(?:start|end)\]\]:)\[&>input\]/g,
+        "$1[&>[data-slot=input-group-control]]",
+      ],
+      [
+        /(^|[\s:])has-disabled:/g,
+        "$1has-[[data-slot=input-group-control]:disabled]:",
+      ],
+    ],
+  ],
   // The command input grows with flex-1 instead.
   "cn-fd-command-input": [
     "cn-command-input",

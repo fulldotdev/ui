@@ -1,23 +1,31 @@
+import { Checkbox } from "@/components/ui/checkbox"
+import { Field, FieldGroup, FieldLegend, FieldSet } from "@/components/ui/field"
+import { Label } from "@/components/ui/label"
 import { Swatch } from "@/components/ui/swatch"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+
+const colors = [
+  { value: "navy", label: "Navy", color: "#1e3a5f" },
+  { value: "sand", label: "Sand", color: "#d8c7a6" },
+  { value: "white", label: "White", color: "#ffffff" },
+]
 
 export default function Demo() {
   return (
     <div className="flex flex-col gap-10 p-6">
-      <ToggleGroup variant="outline" defaultValue={["navy"]} aria-label="Color">
-        <ToggleGroupItem value="navy">
-          <Swatch color="#1e3a5f" />
-          Navy
-        </ToggleGroupItem>
-        <ToggleGroupItem value="sand">
-          <Swatch color="#d8c7a6" />
-          Sand
-        </ToggleGroupItem>
-        <ToggleGroupItem value="white">
-          <Swatch color="#ffffff" />
-          White
-        </ToggleGroupItem>
-      </ToggleGroup>
+      <FieldSet>
+        <FieldLegend variant="label">Color</FieldLegend>
+        <FieldGroup className="gap-3">
+          {colors.map(({ value, label, color }) => (
+            <Field key={value} orientation="horizontal">
+              <Checkbox id={`color-${value}`} name="color" value={value} />
+              <Label htmlFor={`color-${value}`}>
+                <Swatch color={color} />
+                {label}
+              </Label>
+            </Field>
+          ))}
+        </FieldGroup>
+      </FieldSet>
     </div>
   )
 }

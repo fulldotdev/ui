@@ -68,6 +68,20 @@ const resolvedOpts: EmblaOptionsType = {
       const opts: EmblaOptionsType = JSON.parse(
         root.dataset.carouselOptions || "{}"
       )
+      // A link to a slide, such as a thumbnail clicked before this script
+      // ran, scrolls the viewport natively. Embla moves the track instead,
+      // so it starts on that slide from an unscrolled viewport.
+      const slides = [...(viewport.firstElementChild?.children ?? [])]
+      let hash = location.hash.slice(1)
+      try {
+        hash = decodeURIComponent(hash)
+      } catch {
+        // Keep a malformed hash as it is.
+      }
+      const linked = hash ? slides.findIndex((slide) => slide.id === hash) : -1
+      if (linked >= 0 && opts.startIndex === undefined) opts.startIndex = linked
+      viewport.scrollLeft = 0
+      viewport.scrollTop = 0
       const api = EmblaCarousel(viewport, opts)
       root.__fulldevCarouselApi = api
       const previous = getParts<HTMLButtonElement>(root, "previous")
