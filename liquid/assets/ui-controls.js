@@ -165,30 +165,34 @@ function initializeToaster({ createToast }, root) {
 }
 
 // A number field's buttons step its native input, as its arrow keys do, and fire the input and change
-// events that typing fires, so a form or cart script sees one kind of change. Without JavaScript the
+// events that typing fires, so a form or cart script sees one kind of change. Clicks are read on the
+// root, so buttons and an input that a cart refresh replaces keep working. Without JavaScript the
 // input still works on its own.
 function initializeNumberField(_, root) {
-  const input = root.querySelector('[data-slot="number-field-input"]');
   const events = new AbortController();
-  const step = (direction) => {
-    if (!input || input.disabled || input.readOnly) return;
-    const value = input.value;
-    try {
-      if (direction < 0) input.stepDown();
-      else input.stepUp();
-    } catch {
-      return;
-    }
-    if (input.value === value) return;
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  };
-  for (const [slot, direction] of [
-    ['number-field-decrement', -1],
-    ['number-field-increment', 1],
-  ])
-    for (const button of root.querySelectorAll(`[data-slot="${slot}"]`))
-      button.addEventListener('click', () => step(direction), { signal: events.signal });
+  root.addEventListener(
+    'click',
+    (event) => {
+      const button =
+        event.target instanceof Element
+          ? event.target.closest('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]')
+          : null;
+      const input = root.querySelector('input');
+      if (!button || button.closest('[data-slot="number-field"]') !== root || button.disabled) return;
+      if (!input || input.disabled || input.readOnly) return;
+      const value = input.value;
+      try {
+        if (button.dataset.slot === 'number-field-decrement') input.stepDown();
+        else input.stepUp();
+      } catch {
+        return;
+      }
+      if (input.value === value) return;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    },
+    { signal: events.signal },
+  );
   return { destroy: () => events.abort() };
 }
 

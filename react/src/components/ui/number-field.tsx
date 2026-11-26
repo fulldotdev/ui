@@ -7,13 +7,19 @@ import { MinusIcon, PlusIcon } from "lucide-react"
 
 import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group"
 
-function NumberField({ className, ...props }: NumberFieldPrimitive.Root.Props) {
+function NumberField({
+  className,
+  disabled,
+  ...props
+}: NumberFieldPrimitive.Root.Props) {
   return (
     <NumberFieldPrimitive.Root
       data-slot="number-field"
+      data-disabled={disabled ? "true" : undefined}
       role="group"
+      disabled={disabled}
       className={cn(
-        "group/input-group cn-input-group relative flex w-32 min-w-0 items-center outline-none has-[[data-slot=number-field-input]:focus-visible]:border-ring has-[[data-slot=number-field-input]:focus-visible]:ring-3 has-[[data-slot=number-field-input]:focus-visible]:ring-ring/50",
+        "group/input-group cn-input-group relative flex w-32 min-w-0 items-center outline-none",
         className
       )}
       {...props}
@@ -27,7 +33,7 @@ function NumberFieldInput({
 }: NumberFieldPrimitive.Input.Props) {
   return (
     <NumberFieldPrimitive.Input
-      data-slot="number-field-input"
+      data-slot="input-group-control"
       className={cn(
         "cn-input cn-input-group-input w-full min-w-0 flex-1 text-center tabular-nums outline-none placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
         className

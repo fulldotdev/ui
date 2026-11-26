@@ -173,7 +173,7 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
             <div data-slot="input-group-addon">
               <button type="button" data-slot="number-field-decrement" data-button data-variant="ghost" data-size="icon-xs" aria-label="Decrease">-</button>
             </div>
-            <input data-slot="number-field-input" type="number" value="1" min="1" max="3" aria-label="Quantity">
+            <input data-slot="input" type="number" value="1" min="1" max="3" aria-label="Quantity">
             <div data-slot="input-group-addon" data-align="inline-end">
               <button type="button" data-slot="number-field-increment" data-button data-variant="ghost" data-size="icon-xs" aria-label="Increase">+</button>
             </div>
@@ -203,6 +203,22 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
         await root.getByRole("spinbutton", { name: "Quantity" }).inputValue(),
         "2"
       )
+      // A cart refresh can replace the buttons and input inside the root.
+      await root.locator('[data-slot="number-field"]').evaluate((field) => {
+        const markup = field.innerHTML
+        field.innerHTML = markup
+        const input = field.querySelector("input")
+        input.value = "2"
+        for (const type of ["input", "change"])
+          input.addEventListener(type, () =>
+            window.quantityEvents.push(`${type} ${input.value}`)
+          )
+      })
+      await root.getByRole("button", { name: "Increase" }).click()
+      assert.equal(
+        await root.getByRole("spinbutton", { name: "Quantity" }).inputValue(),
+        "3"
+      )
       // The third click is past max, so it changes nothing and fires nothing.
       assert.deepEqual(await page.evaluate(() => window.quantityEvents), [
         "input 2",
@@ -211,6 +227,8 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
         "change 3",
         "input 2",
         "change 2",
+        "input 3",
+        "change 3",
       ])
 
       await root.locator('[data-slot="carousel"][data-enhanced]').waitFor()

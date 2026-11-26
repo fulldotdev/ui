@@ -110,7 +110,8 @@ const resolvedOpts: EmblaOptionsType = {
       const onPrevious = () => api.scrollPrev(jump())
       const onNext = () => api.scrollNext(jump())
       // An indicator that links to its slide scrolls the carousel on a plain
-      // click instead of moving the page.
+      // click instead of moving the page. When Embla does not take the
+      // click, such as at a breakpoint where it is inactive, the link works.
       const onIndicator = (event: MouseEvent) => {
         const indicator = event.currentTarget as HTMLElement
         const index = Number(indicator.dataset.index)
@@ -124,8 +125,8 @@ const resolvedOpts: EmblaOptionsType = {
             event.altKey)
         )
           return
-        event.preventDefault()
         api.scrollTo(index, jump())
+        if (api.selectedScrollSnap() === index) event.preventDefault()
       }
       const onKeyDown = (event: KeyboardEvent) => {
         const target = event.target

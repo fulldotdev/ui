@@ -37,38 +37,36 @@
   :is([data-slot='input-group'], [data-slot='number-field']) > input:focus-visible {
     box-shadow: none;
   }
-  /* An addon sits at the start, or at the end with data-align='inline-end', as in Fulldev UI. A
-   button in it moves a little closer to the edge, and the input gives up some of its padding on
-   the addon's side. */
+  /* An addon before the input sits at the start and one after it at the end; data-align='inline-start'
+   or 'inline-end' names the side, as in Fulldev UI. A button in it moves a little closer to the
+   edge, and the input gives up some of its padding on the addon's side. */
   [data-slot='input-group-addon'] {
     display: flex;
     align-items: center;
     gap: calc(var(--spacing) * 2);
-    padding-left: calc(var(--spacing) * 2);
     color: var(--muted-foreground);
     font-size: 0.875rem;
     font-weight: 500;
   }
-  [data-slot='input-group-addon'][data-align='inline-end'] {
-    padding-right: calc(var(--spacing) * 2);
-    padding-left: 0;
+  [data-slot='input-group-addon']:is([data-align='inline-start'], :not([data-align]):has(~ input)) {
+    padding-left: calc(var(--spacing) * 2);
   }
-  [data-slot='input-group-addon']:not([data-align='inline-end']):has(> button) {
+  [data-slot='input-group-addon']:is([data-align='inline-end'], input ~ :not([data-align])) {
+    padding-right: calc(var(--spacing) * 2);
+  }
+  [data-slot='input-group-addon']:is([data-align='inline-start'], :not([data-align]):has(~ input)):has(> button) {
     margin-left: calc(var(--spacing) * -1);
   }
-  [data-slot='input-group-addon'][data-align='inline-end']:has(> button) {
+  [data-slot='input-group-addon']:is([data-align='inline-end'], input ~ :not([data-align])):has(> button) {
     margin-right: calc(var(--spacing) * -1);
   }
-  :is([data-slot='input-group'], [data-slot='number-field']):has(
-      > [data-slot='input-group-addon']:not([data-align='inline-end'])
-    )
-    > input {
+  :is([data-slot='input-group'], [data-slot='number-field'])
+    > [data-slot='input-group-addon']:not([data-align='inline-end'])
+    ~ input {
     padding-left: calc(var(--spacing) * 1.5);
   }
-  :is([data-slot='input-group'], [data-slot='number-field']):has(
-      > [data-slot='input-group-addon'][data-align='inline-end']
-    )
-    > input {
+  :is([data-slot='input-group'], [data-slot='number-field'])
+    > input:has(~ [data-slot='input-group-addon']:not([data-align='inline-start'])) {
     padding-right: calc(var(--spacing) * 1.5);
   }
   [data-slot='input-group-addon'] > .icon {
