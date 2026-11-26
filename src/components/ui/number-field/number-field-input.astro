@@ -6,18 +6,19 @@ import { InputGroupInput } from "@/components/ui/input-group"
 
 type Props = Omit<ComponentProps<typeof InputGroupInput>, "type">
 
-// A whole-number step gets the numeric keypad, a fractional one the decimal.
-const {
-  class: className,
-  step,
-  inputmode = Number.isInteger(Number(step ?? 1)) ? "numeric" : "decimal",
-  ...props
-} = Astro.props
+const { class: className, step, min, inputmode, ...props } = Astro.props
+// A field that cannot go below 0 gets the numeric keypad, or the decimal one
+// for fractions. Others keep the browser's keyboard, which has a minus key.
+const unsigned = min !== undefined && Number(min) >= 0
+const whole =
+  Number.isInteger(Number(step ?? 1)) && Number.isInteger(Number(min))
+const keypad = unsigned ? (whole ? "numeric" : "decimal") : undefined
 ---
 
 <InputGroupInput
   step={step}
-  inputmode={inputmode}
+  min={min}
+  inputmode={inputmode ?? keypad}
   class={cn(
     "text-center tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
     className

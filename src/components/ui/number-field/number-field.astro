@@ -113,14 +113,11 @@ const { class: className, ...props } = Astro.props
       } catch {
         return
       }
-      // A click at a bound that a later script set only corrects the buttons.
-      if (input.value === value) {
-        sync(root)
-        return
+      if (input.value !== value) {
+        input.dispatchEvent(new Event("input", { bubbles: true }))
+        input.dispatchEvent(new Event("change", { bubbles: true }))
       }
-
-      input.dispatchEvent(new Event("input", { bubbles: true }))
-      input.dispatchEvent(new Event("change", { bubbles: true }))
+      sync(root)
     })
     // Pressing a button keeps the focus where it is, so a typed value is not
     // committed by a blur, and a form that refreshes on change, before the

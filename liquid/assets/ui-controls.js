@@ -216,9 +216,11 @@ function initializeNumberField(_, root) {
       } catch {
         return;
       }
-      if (input.value === value) return;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
+      if (input.value !== value) {
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      sync();
     },
     options,
   );
@@ -241,7 +243,10 @@ function initializeNumberField(_, root) {
   document.addEventListener(
     'reset',
     (event) => {
-      if (root.querySelector('input')?.form === event.target) setTimeout(sync);
+      if (root.querySelector('input')?.form === event.target)
+        setTimeout(() => {
+          if (!events.signal.aborted) sync();
+        });
     },
     options,
   );
