@@ -6,11 +6,18 @@ import { InputGroupInput } from "@/components/ui/input-group"
 
 type Props = ComponentProps<typeof InputGroupInput>
 
-const { class: className, inputmode = "numeric", ...props } = Astro.props
+// A whole-number step gets the numeric keypad, a fractional one the decimal.
+const {
+  class: className,
+  step,
+  inputmode = Number.isInteger(Number(step ?? 1)) ? "numeric" : "decimal",
+  ...props
+} = Astro.props
 ---
 
 <InputGroupInput
   type="number"
+  step={step}
   inputmode={inputmode}
   class={cn(
     "text-center tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",

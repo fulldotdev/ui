@@ -103,7 +103,11 @@ const { class: className, ...props } = Astro.props
       } catch {
         return
       }
-      if (input.value === value) return
+      // A click at a bound that a later script set only corrects the buttons.
+      if (input.value === value) {
+        sync(root)
+        return
+      }
 
       input.dispatchEvent(new Event("input", { bubbles: true }))
       input.dispatchEvent(new Event("change", { bubbles: true }))

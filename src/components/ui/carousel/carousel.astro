@@ -119,9 +119,14 @@ const resolvedOpts: EmblaOptionsType = {
         for (const button of next)
           if (button.dataset.manualDisabled !== "true")
             button.disabled = !api.canScrollNext()
+        // As in data-slot, an indicator without a scroll position, such as
+        // the last thumbnails when several slides show, is hidden.
         const selected = active() ? api.selectedScrollSnap() : -1
+        const positions = api.scrollSnapList().length
         for (const indicator of indicators) {
-          const current = Number(indicator.dataset.index) === selected
+          const index = Number(indicator.dataset.index)
+          indicator.hidden = active() && index >= positions
+          const current = index === selected
           indicator.dataset.state = current ? "active" : "inactive"
           if (current) indicator.setAttribute("aria-current", "true")
           else indicator.removeAttribute("aria-current")
@@ -133,8 +138,8 @@ const resolvedOpts: EmblaOptionsType = {
       const onPrevious = () => api.scrollPrev(jump())
       const onNext = () => api.scrollNext(jump())
       // An indicator that links to its slide scrolls the carousel on a plain
-      // click instead of moving the page. Where Embla is inactive, or the
-      // index has no scroll position, the link works as a link.
+      // click instead of moving the page. Where Embla is inactive, the link
+      // works as a link.
       const onIndicator = (event: MouseEvent) => {
         const indicator = event.currentTarget as HTMLElement
         const index = Number(indicator.dataset.index)

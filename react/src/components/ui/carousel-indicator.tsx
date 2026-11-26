@@ -16,10 +16,14 @@ function CarouselIndicator({
 }) {
   const { api, opts } = useCarousel()
   const [selected, setSelected] = React.useState(opts?.startIndex ?? 0)
+  const [positions, setPositions] = React.useState<number>()
 
   React.useEffect(() => {
     if (!api) return
-    const update = () => setSelected(api.selectedScrollSnap())
+    const update = () => {
+      setSelected(api.selectedScrollSnap())
+      setPositions(api.scrollSnapList().length)
+    }
     update()
     api.on("select", update)
     api.on("reInit", update)
@@ -30,6 +34,9 @@ function CarouselIndicator({
   }, [api])
 
   const active = selected === index
+  // As in data-slot, an indicator without a scroll position, such as the last
+  // thumbnails when several slides show, is hidden.
+  const hidden = positions !== undefined && index >= positions
 
   return (
     <button
@@ -39,6 +46,7 @@ function CarouselIndicator({
       data-state={active ? "active" : "inactive"}
       aria-current={active ? "true" : undefined}
       aria-label={ariaLabel}
+      hidden={hidden || undefined}
       className={cn(
         "cn-carousel-indicator relative block shrink-0 cursor-pointer overflow-hidden [&>img]:size-full [&>img]:object-cover",
         className
