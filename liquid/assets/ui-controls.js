@@ -219,6 +219,19 @@ function initializeNumberField(_, root) {
     },
     options,
   );
+  // Pressing a button keeps the focus where it is, so a typed value is not committed by a blur, and a
+  // cart that refreshes on change, before the click steps it.
+  root.addEventListener(
+    'mousedown',
+    (event) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]')
+      )
+        event.preventDefault();
+    },
+    options,
+  );
   // A pointer or focus that reaches the field first also syncs it, for a value a script set without an event.
   for (const type of ['input', 'change', 'pointerover', 'focusin']) root.addEventListener(type, sync, options);
   // A form reset restores the input after the event, also for an input in a form elsewhere.

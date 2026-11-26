@@ -74,7 +74,9 @@ const resolvedOpts: EmblaOptionsType = {
       root.__fulldevCarouselApi = api
       const previous = getParts<HTMLButtonElement>(root, "previous")
       const next = getParts<HTMLButtonElement>(root, "next")
-      const indicators = getParts<HTMLElement>(root, "indicator")
+      // Indicators are read on each use, so thumbnails that a variant change
+      // replaces keep working.
+      const indicators = () => getParts<HTMLElement>(root, "indicator")
       const emit = (type: "carousel:init" | "carousel:select") => {
         root.dispatchEvent(
           new CustomEvent(type, {
@@ -99,12 +101,13 @@ const resolvedOpts: EmblaOptionsType = {
           if (button.dataset.manualDisabled !== "true")
             button.disabled = !api.canScrollNext()
         // As in data-slot, an indicator without a scroll position, such as
-        // the last thumbnails when several slides show, is hidden.
+        // the last thumbnails when several slides show, is hidden, and all
+        // are while Embla is inactive at the current breakpoint.
         const selected = active() ? api.selectedScrollSnap() : -1
         const positions = api.scrollSnapList().length
-        for (const indicator of indicators) {
+        for (const indicator of indicators()) {
           const index = Number(indicator.dataset.index)
-          indicator.hidden = active() && (index < 0 || index >= positions)
+          indicator.hidden = !active() || index < 0 || index >= positions
           const current = index === selected
           indicator.dataset.state = current ? "active" : "inactive"
           if (current) indicator.setAttribute("aria-current", "true")
@@ -116,8 +119,11 @@ const resolvedOpts: EmblaOptionsType = {
         window.matchMedia("(prefers-reduced-motion: reduce)").matches
       const onPrevious = () => api.scrollPrev(jump())
       const onNext = () => api.scrollNext(jump())
-      const onIndicator = (event: MouseEvent) => {
-        const indicator = event.currentTarget as HTMLElement
+      const onClick = (event: MouseEvent) => {
+        const indicator =
+          event.target instanceof Element &&
+          event.target.closest<HTMLElement>("[data-carousel-indicator]")
+        if (!indicator || indicator.closest(rootSelector) !== root) return
         const index = Number(indicator.dataset.index)
         if (Number.isInteger(index) && index >= 0) api.scrollTo(index, jump())
       }
@@ -154,8 +160,7 @@ const resolvedOpts: EmblaOptionsType = {
       for (const button of previous)
         button.addEventListener("click", onPrevious)
       for (const button of next) button.addEventListener("click", onNext)
-      for (const indicator of indicators)
-        indicator.addEventListener("click", onIndicator)
+      root.addEventListener("click", onClick)
       root.addEventListener("keydown", onKeyDown)
       api.on("select", sync)
       api.on("reInit", sync)
@@ -166,8 +171,7 @@ const resolvedOpts: EmblaOptionsType = {
         for (const button of previous)
           button.removeEventListener("click", onPrevious)
         for (const button of next) button.removeEventListener("click", onNext)
-        for (const indicator of indicators)
-          indicator.removeEventListener("click", onIndicator)
+        root.removeEventListener("click", onClick)
         root.removeEventListener("keydown", onKeyDown)
         api.off("select", sync)
         api.off("reInit", sync)

@@ -122,6 +122,18 @@ const { class: className, ...props } = Astro.props
       input.dispatchEvent(new Event("input", { bubbles: true }))
       input.dispatchEvent(new Event("change", { bubbles: true }))
     })
+    // Pressing a button keeps the focus where it is, so a typed value is not
+    // committed by a blur, and a form that refreshes on change, before the
+    // click steps it.
+    document.addEventListener("mousedown", (event) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest(
+          '[data-slot="number-field-decrement"], [data-slot="number-field-increment"]'
+        )
+      )
+        event.preventDefault()
+    })
     // A pointer or focus that reaches the field first also syncs it, for a
     // field added later or a value a script set without an event.
     for (const type of ["input", "change", "pointerover", "focusin"])

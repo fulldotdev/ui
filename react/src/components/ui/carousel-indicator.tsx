@@ -17,12 +17,14 @@ function CarouselIndicator({
   const { api, opts } = useCarousel()
   const [selected, setSelected] = React.useState(opts?.startIndex ?? 0)
   const [positions, setPositions] = React.useState<number>()
+  const [inactive, setInactive] = React.useState(false)
 
   React.useEffect(() => {
     if (!api) return
     const update = () => {
       setSelected(api.selectedScrollSnap())
       setPositions(api.scrollSnapList().length)
+      setInactive(api.internalEngine().options.active === false)
     }
     update()
     api.on("select", update)
@@ -33,10 +35,12 @@ function CarouselIndicator({
     }
   }, [api])
 
-  const active = selected === index
+  const active = !inactive && selected === index
   // As in data-slot, an indicator without a scroll position, such as the last
-  // thumbnails when several slides show, is hidden.
-  const hidden = positions !== undefined && index >= positions
+  // thumbnails when several slides show, is hidden, and all are while Embla is
+  // inactive at the current breakpoint.
+  const hidden =
+    inactive || (positions !== undefined && (index < 0 || index >= positions))
 
   return (
     <button
