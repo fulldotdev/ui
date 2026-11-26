@@ -165,12 +165,13 @@ function initializeToaster({ createToast }, root) {
 }
 
 // A number field's buttons step its native input, as its arrow keys do, and fire the input and change
-// events that typing fires, so a form or cart script sees one kind of change. As in Base UI, they are
-// disabled at the input's bounds and while it is disabled or read-only. Events are read on the root,
-// so buttons and an input that a cart refresh replaces keep working. Without JavaScript the input
-// still works on its own.
+// events that typing fires, so a form or cart script sees one kind of change. As in Base UI, the
+// runtime disables them at the input's bounds and while it is disabled or read-only, also when a
+// variant change sets new bounds or a cart refresh replaces the markup; disable the input to
+// disable the field. Without JavaScript the input still works on its own.
 function initializeNumberField(_, root) {
   const events = new AbortController();
+  const options = { signal: events.signal };
   const buttons = () =>
     root.querySelectorAll('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]');
   const sync = () => {
@@ -181,12 +182,12 @@ function initializeNumberField(_, root) {
     for (const button of buttons()) {
       const decrement = button.dataset.slot === 'number-field-decrement';
       const bound = decrement ? input.min : input.max;
-      button.disabled =
+      const disabled =
         locked ||
         (bound !== '' && !Number.isNaN(value) && (decrement ? value <= Number(bound) : value >= Number(bound)));
+      if (button.disabled !== disabled) button.disabled = disabled;
     }
   };
-  const options = { signal: events.signal };
   root.addEventListener(
     'click',
     (event) => {
@@ -212,12 +213,29 @@ function initializeNumberField(_, root) {
   );
   root.addEventListener('input', sync, options);
   root.addEventListener('change', sync, options);
-  // A form reset restores the input after the event.
-  root.closest('form')?.addEventListener('reset', () => setTimeout(sync), options);
+  // A form reset restores the input after the event, also for an input in a form elsewhere.
+  document.addEventListener(
+    'reset',
+    (event) => {
+      if (root.querySelector('input')?.form === event.target) setTimeout(sync);
+    },
+    options,
+  );
+  const observer = new MutationObserver((mutations) => {
+    if (mutations.some((mutation) => mutation.type === 'childList' || mutation.target instanceof HTMLInputElement))
+      sync();
+  });
+  observer.observe(root, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['min', 'max', 'disabled', 'readonly'],
+  });
   sync();
   return {
     destroy() {
       events.abort();
+      observer.disconnect();
       for (const button of buttons()) button.disabled = false;
     },
   };

@@ -19,7 +19,7 @@ function NumberField({
       role="group"
       disabled={disabled}
       className={cn(
-        "group/input-group cn-input-group relative flex w-32 min-w-0 items-center outline-none",
+        "cn-fd-number-field group/input-group relative flex w-32 min-w-0 items-center outline-none",
         className
       )}
       {...props}

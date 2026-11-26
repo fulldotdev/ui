@@ -80,9 +80,14 @@ const resolvedOpts: EmblaOptionsType = {
       }
       const linked = hash ? slides.findIndex((slide) => slide.id === hash) : -1
       if (linked >= 0 && opts.startIndex === undefined) opts.startIndex = linked
-      viewport.scrollLeft = 0
-      viewport.scrollTop = 0
       const api = EmblaCarousel(viewport, opts)
+      // Whether Embla runs at the current breakpoint. When it does not, the
+      // slides and links keep their native scrolling.
+      const active = () => api.internalEngine().options.active !== false
+      if (active()) {
+        viewport.scrollLeft = 0
+        viewport.scrollTop = 0
+      }
       root.__fulldevCarouselApi = api
       const previous = getParts<HTMLButtonElement>(root, "previous")
       const next = getParts<HTMLButtonElement>(root, "next")
@@ -110,11 +115,11 @@ const resolvedOpts: EmblaOptionsType = {
         for (const button of next)
           if (button.dataset.manualDisabled !== "true")
             button.disabled = !api.canScrollNext()
-        const selected = api.selectedScrollSnap()
+        const selected = active() ? api.selectedScrollSnap() : -1
         for (const indicator of indicators) {
-          const active = Number(indicator.dataset.index) === selected
-          indicator.dataset.state = active ? "active" : "inactive"
-          if (active) indicator.setAttribute("aria-current", "true")
+          const current = Number(indicator.dataset.index) === selected
+          indicator.dataset.state = current ? "active" : "inactive"
+          if (current) indicator.setAttribute("aria-current", "true")
           else indicator.removeAttribute("aria-current")
         }
         emit("carousel:select")
@@ -124,8 +129,8 @@ const resolvedOpts: EmblaOptionsType = {
       const onPrevious = () => api.scrollPrev(jump())
       const onNext = () => api.scrollNext(jump())
       // An indicator that links to its slide scrolls the carousel on a plain
-      // click instead of moving the page. When Embla does not take the
-      // click, such as at a breakpoint where it is inactive, the link works.
+      // click instead of moving the page. Where Embla is inactive, or the
+      // index has no scroll position, the link works as a link.
       const onIndicator = (event: MouseEvent) => {
         const indicator = event.currentTarget as HTMLElement
         const index = Number(indicator.dataset.index)
@@ -139,8 +144,9 @@ const resolvedOpts: EmblaOptionsType = {
             event.altKey)
         )
           return
+        if (!active() || index >= api.scrollSnapList().length) return
+        event.preventDefault()
         api.scrollTo(index, jump())
-        if (api.selectedScrollSnap() === index) event.preventDefault()
       }
       const onKeyDown = (event: KeyboardEvent) => {
         const target = event.target
