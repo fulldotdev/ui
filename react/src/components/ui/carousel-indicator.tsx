@@ -40,7 +40,9 @@ function CarouselIndicator({
   // thumbnails when several slides show, is hidden, and all are while Embla is
   // inactive at the current breakpoint.
   const hidden =
-    inactive || (positions !== undefined && (index < 0 || index >= positions))
+    inactive ||
+    !Number.isInteger(index) ||
+    (positions !== undefined && (index < 0 || index >= positions))
 
   return (
     <button
@@ -57,7 +59,7 @@ function CarouselIndicator({
       )}
       onClick={(event) => {
         onClick?.(event)
-        if (event.defaultPrevented) return
+        if (event.defaultPrevented || hidden) return
         const reduce = window.matchMedia("(prefers-reduced-motion: reduce)")
         api?.scrollTo(index, reduce.matches)
       }}
