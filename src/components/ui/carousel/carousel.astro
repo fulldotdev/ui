@@ -68,25 +68,29 @@ const resolvedOpts: EmblaOptionsType = {
       const opts: EmblaOptionsType = JSON.parse(
         root.dataset.carouselOptions || "{}"
       )
-      // A link to a slide, such as a thumbnail clicked before this script
-      // ran, scrolls the viewport natively. Embla moves the track instead,
-      // so it starts on that slide from an unscrolled viewport.
-      const slides = [...(viewport.firstElementChild?.children ?? [])]
-      let hash = location.hash.slice(1)
-      try {
-        hash = decodeURIComponent(hash)
-      } catch {
-        // Keep a malformed hash as it is.
-      }
-      const linked = hash ? slides.findIndex((slide) => slide.id === hash) : -1
-      if (linked >= 0 && opts.startIndex === undefined) opts.startIndex = linked
       const api = EmblaCarousel(viewport, opts)
       // Whether Embla runs at the current breakpoint. When it does not, the
       // slides and links keep their native scrolling.
       const active = () => api.internalEngine().options.active !== false
+      // A link to a slide, such as a thumbnail clicked before this script
+      // ran, scrolls the viewport natively. Embla moves the track instead, so
+      // it shows that slide's scroll position from an unscrolled viewport.
       if (active()) {
         viewport.scrollLeft = 0
         viewport.scrollTop = 0
+        let hash = location.hash.slice(1)
+        try {
+          hash = decodeURIComponent(hash)
+        } catch {
+          // Keep a malformed hash as it is.
+        }
+        const slide = hash
+          ? api.slideNodes().findIndex((node) => node.id === hash)
+          : -1
+        const snap = api
+          .internalEngine()
+          .slideRegistry.findIndex((group) => group.includes(slide))
+        if (slide >= 0 && snap >= 0) api.scrollTo(snap, true)
       }
       root.__fulldevCarouselApi = api
       const previous = getParts<HTMLButtonElement>(root, "previous")
