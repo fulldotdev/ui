@@ -69,29 +69,8 @@ const resolvedOpts: EmblaOptionsType = {
         root.dataset.carouselOptions || "{}"
       )
       const api = EmblaCarousel(viewport, opts)
-      // Whether Embla runs at the current breakpoint. When it does not, the
-      // slides and links keep their native scrolling.
+      // Whether Embla runs at the current breakpoint.
       const active = () => api.internalEngine().options.active !== false
-      // A link to a slide, such as a thumbnail clicked before this script
-      // ran, scrolls the viewport natively. Embla moves the track instead, so
-      // it shows that slide's scroll position from an unscrolled viewport.
-      if (active()) {
-        viewport.scrollLeft = 0
-        viewport.scrollTop = 0
-        let hash = location.hash.slice(1)
-        try {
-          hash = decodeURIComponent(hash)
-        } catch {
-          // Keep a malformed hash as it is.
-        }
-        const slide = hash
-          ? api.slideNodes().findIndex((node) => node.id === hash)
-          : -1
-        const snap = api
-          .internalEngine()
-          .slideRegistry.findIndex((group) => group.includes(slide))
-        if (slide >= 0 && snap >= 0) api.scrollTo(snap, true)
-      }
       root.__fulldevCarouselApi = api
       const previous = getParts<HTMLButtonElement>(root, "previous")
       const next = getParts<HTMLButtonElement>(root, "next")
@@ -137,25 +116,10 @@ const resolvedOpts: EmblaOptionsType = {
         window.matchMedia("(prefers-reduced-motion: reduce)").matches
       const onPrevious = () => api.scrollPrev(jump())
       const onNext = () => api.scrollNext(jump())
-      // An indicator that links to its slide scrolls the carousel on a plain
-      // click instead of moving the page. Where Embla is inactive, the link
-      // works as a link.
       const onIndicator = (event: MouseEvent) => {
         const indicator = event.currentTarget as HTMLElement
         const index = Number(indicator.dataset.index)
-        if (!Number.isInteger(index)) return
-        if (
-          indicator instanceof HTMLAnchorElement &&
-          (event.button !== 0 ||
-            event.metaKey ||
-            event.ctrlKey ||
-            event.shiftKey ||
-            event.altKey)
-        )
-          return
-        if (!active() || index >= api.scrollSnapList().length) return
-        event.preventDefault()
-        api.scrollTo(index, jump())
+        if (Number.isInteger(index)) api.scrollTo(index, jump())
       }
       const onKeyDown = (event: KeyboardEvent) => {
         const target = event.target

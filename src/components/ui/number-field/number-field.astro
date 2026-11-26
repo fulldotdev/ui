@@ -23,28 +23,38 @@ const { class: className, ...props } = Astro.props
 <script>
   // The buttons step the native input as its arrow keys do and fire the
   // input and change events that typing fires. As in Base UI, they are left
-  // out of the tab order, where the input's arrow keys step, and disabled at
-  // the input's bounds or while it is disabled or read-only, also when new
-  // bounds are set or the markup inside is replaced. Without JavaScript the
-  // input still works on its own.
+  // out of the tab order, where the input's arrow keys step, and disabled when
+  // a step would not change the value: at a bound, or while the input is
+  // disabled or read-only. They follow new attributes and replaced markup;
+  // a script that sets the value property fires input or change. Without
+  // JavaScript the input still works on its own.
   const buttons = (root: Element) =>
     root.querySelectorAll<HTMLButtonElement>(
       '[data-slot="number-field-decrement"], [data-slot="number-field-increment"]'
     )
+  // Steps a detached copy, so min, max and step apply as the browser applies
+  // them.
+  const canStep = (input: HTMLInputElement, decrement: boolean) => {
+    if (input.disabled || input.readOnly) return false
+    const probe = input.cloneNode() as HTMLInputElement
+    probe.value = input.value
+    try {
+      if (decrement) probe.stepDown()
+      else probe.stepUp()
+    } catch {
+      return false
+    }
+    return probe.value !== input.value
+  }
   const sync = (root: Element) => {
     const input = root.querySelector("input")
     if (!input) return
-    const value = input.valueAsNumber
-    const locked = input.disabled || input.readOnly
     for (const button of buttons(root)) {
       if (button.dataset.manualDisabled === "true") continue
-      const decrement = button.dataset.slot === "number-field-decrement"
-      const bound = decrement ? input.min : input.max
-      const disabled =
-        locked ||
-        (bound !== "" &&
-          !Number.isNaN(value) &&
-          (decrement ? value <= Number(bound) : value >= Number(bound)))
+      const disabled = !canStep(
+        input,
+        button.dataset.slot === "number-field-decrement"
+      )
       if (button.disabled !== disabled) button.disabled = disabled
     }
   }
@@ -75,7 +85,14 @@ const { class: className, ...props } = Astro.props
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ["min", "max", "disabled", "readonly"],
+        attributeFilter: [
+          "min",
+          "max",
+          "step",
+          "value",
+          "disabled",
+          "readonly",
+        ],
       })
     }
   }

@@ -339,14 +339,13 @@ for (const browserType of [chromium, firefox, webkit]) {
 
         await page.goto(`${origin}/components/carousel/`)
         const gallery = page.getByRole("region", { name: "Product images" })
-        await gallery.getByRole("link", { name: "Show image 3" }).click()
+        await gallery.getByRole("button", { name: "Show image 3" }).click()
         await page.waitForFunction(
           () =>
             document
               .querySelector('[data-carousel-indicator][data-index="2"]')
               ?.getAttribute("aria-current") === "true"
         )
-        assert.equal(new URL(page.url()).hash, "")
       }
     )
 

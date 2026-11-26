@@ -166,25 +166,33 @@ function initializeToaster({ createToast }, root) {
 
 // A number field's buttons step its native input, as its arrow keys do, and fire the input and change
 // events that typing fires, so a form or cart script sees one kind of change. As in Base UI, the
-// runtime disables them at the input's bounds and while it is disabled or read-only, also when a
-// variant change sets new bounds or a cart refresh replaces the markup; disable the input to
-// disable the field. Without JavaScript the input still works on its own.
+// runtime disables them when a step would not change the value: at a bound, or while the input is
+// disabled or read-only. They follow new attributes, such as a variant's bounds, and markup a cart
+// refresh replaces; a script that sets the value property fires input or change. Disable the input
+// to disable the field. Without JavaScript the input still works on its own.
 function initializeNumberField(_, root) {
   const events = new AbortController();
   const options = { signal: events.signal };
   const buttons = () =>
     root.querySelectorAll('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]');
+  // Steps a detached copy, so min, max and step apply as the browser applies them.
+  const canStep = (input, decrement) => {
+    if (input.disabled || input.readOnly) return false;
+    const probe = input.cloneNode();
+    probe.value = input.value;
+    try {
+      if (decrement) probe.stepDown();
+      else probe.stepUp();
+    } catch {
+      return false;
+    }
+    return probe.value !== input.value;
+  };
   const sync = () => {
     const input = root.querySelector('input');
     if (!input) return;
-    const value = input.valueAsNumber;
-    const locked = input.disabled || input.readOnly;
     for (const button of buttons()) {
-      const decrement = button.dataset.slot === 'number-field-decrement';
-      const bound = decrement ? input.min : input.max;
-      const disabled =
-        locked ||
-        (bound !== '' && !Number.isNaN(value) && (decrement ? value <= Number(bound) : value >= Number(bound)));
+      const disabled = !canStep(input, button.dataset.slot === 'number-field-decrement');
       if (button.disabled !== disabled) button.disabled = disabled;
     }
   };
@@ -229,7 +237,7 @@ function initializeNumberField(_, root) {
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: ['min', 'max', 'disabled', 'readonly'],
+    attributeFilter: ['min', 'max', 'step', 'value', 'disabled', 'readonly'],
   });
   sync();
   return {
