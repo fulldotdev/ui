@@ -1,0 +1,32 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = Omit<HTMLAttributes<"button">, "type"> & {
+  index: number
+}
+
+const {
+  class: className,
+  index,
+  "aria-label": ariaLabel = `Go to slide ${index + 1}`,
+  "data-slot": dataSlot = "carousel-indicator",
+  ...props
+} = Astro.props
+---
+
+<button
+  type="button"
+  data-slot={dataSlot}
+  data-carousel-indicator
+  data-index={index}
+  aria-label={ariaLabel}
+  class={cn(
+    "cn-carousel-indicator relative block shrink-0 cursor-pointer overflow-hidden [&>img]:size-full [&>img]:object-cover",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</button>

@@ -1,0 +1,158 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"div">
+
+const { class: className, ...props } = Astro.props
+---
+
+<div
+  data-slot="number-field"
+  role="group"
+  class={cn(
+    "cn-fd-number-field group/input-group relative flex w-32 min-w-0 items-center outline-none",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</div>
+
+<script>
+  // The buttons step the native input as its arrow keys do and fire the
+  // input and change events that typing fires. As in Base UI, they are left
+  // out of the tab order, where the input's arrow keys step, and disabled when
+  // a step would not change the value: at a bound, or while the input is
+  // disabled or read-only. They follow new attributes and replaced markup.
+  // Without JavaScript the input still works on its own.
+  const buttons = (root: Element) =>
+    root.querySelectorAll<HTMLButtonElement>(
+      '[data-slot="number-field-decrement"], [data-slot="number-field-increment"]'
+    )
+  // Steps a detached copy, so min, max and step apply as the browser applies
+  // them.
+  const canStep = (input: HTMLInputElement, decrement: boolean) => {
+    if (input.disabled || input.readOnly) return false
+    const probe = input.cloneNode() as HTMLInputElement
+    probe.value = input.value
+    try {
+      if (decrement) probe.stepDown()
+      else probe.stepUp()
+    } catch {
+      return false
+    }
+    return probe.value !== input.value
+  }
+  const observed = new WeakSet<Element>()
+  const observer = new MutationObserver((mutations) => {
+    const roots = new Set<Element>()
+    for (const mutation of mutations) {
+      if (
+        mutation.type === "attributes" &&
+        !(mutation.target instanceof HTMLInputElement)
+      )
+        continue
+      const root =
+        mutation.target instanceof Element &&
+        mutation.target.closest('[data-slot="number-field"]')
+      if (root) roots.add(root)
+    }
+    for (const root of roots) sync(root)
+  })
+  // Syncs the buttons, and data-disabled for the input group look, and
+  // follows the root's later changes.
+  const sync = (root: Element) => {
+    const input = root.querySelector("input")
+    if (!input) return
+    if (input.disabled) root.setAttribute("data-disabled", "true")
+    else root.removeAttribute("data-disabled")
+    for (const button of buttons(root)) {
+      if (button.dataset.manualDisabled === "true") continue
+      const disabled = !canStep(
+        input,
+        button.dataset.slot === "number-field-decrement"
+      )
+      if (button.disabled !== disabled) button.disabled = disabled
+    }
+    if (observed.has(root)) return
+    observed.add(root)
+    observer.observe(root, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["min", "max", "step", "value", "disabled", "readonly"],
+    })
+  }
+  const syncAll = () => {
+    for (const root of document.querySelectorAll('[data-slot="number-field"]'))
+      sync(root)
+  }
+
+  if (!document.documentElement.dataset.numberFieldBound) {
+    document.documentElement.dataset.numberFieldBound = "true"
+
+    document.addEventListener("click", (event) => {
+      const target = event.target
+      if (!(target instanceof Element)) return
+
+      const button = target.closest(
+        '[data-slot="number-field-decrement"], [data-slot="number-field-increment"]'
+      )
+      if (!(button instanceof HTMLButtonElement) || button.disabled) return
+
+      const root = button.closest('[data-slot="number-field"]')
+      const input = root?.querySelector("input")
+      if (!root || !input || input.disabled || input.readOnly) return
+
+      const value = input.value
+      try {
+        if (button.dataset.slot === "number-field-decrement") input.stepDown()
+        else input.stepUp()
+      } catch {
+        return
+      }
+      if (input.value !== value) {
+        input.dispatchEvent(new Event("input", { bubbles: true }))
+        input.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+      sync(root)
+    })
+    // Pressing a button keeps the focus on its field's input, so the typed
+    // value is not committed by a blur, and a form that refreshes on change,
+    // before the click steps it. Another field still blurs.
+    document.addEventListener("mousedown", (event) => {
+      const button =
+        event.target instanceof Element &&
+        event.target.closest(
+          '[data-slot="number-field-decrement"], [data-slot="number-field-increment"]'
+        )
+      const input = button
+        ? button.closest('[data-slot="number-field"]')?.querySelector("input")
+        : null
+      if (input && input === document.activeElement) event.preventDefault()
+    })
+    // A pointer or focus that reaches the field first also syncs it, for a
+    // field added later or a value a script set without an event.
+    for (const type of ["input", "change", "pointerover", "focusin"])
+      document.addEventListener(type, (event) => {
+        const root =
+          event.target instanceof Element &&
+          event.target.closest('[data-slot="number-field"]')
+        if (root) sync(root)
+      })
+    // A form reset restores the inputs after the event, also an input that
+    // belongs to the form from elsewhere.
+    document.addEventListener("reset", (event) => {
+      setTimeout(() => {
+        for (const root of document.querySelectorAll(
+          '[data-slot="number-field"]'
+        ))
+          if (root.querySelector("input")?.form === event.target) sync(root)
+      })
+    })
+    document.addEventListener("astro:page-load", syncAll)
+  }
+  syncAll()
+</script>

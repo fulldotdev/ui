@@ -30,7 +30,31 @@ export function initializeCarousel(root) {
     queueMicrotask(translate);
   });
   observer.observe(content, { childList: true });
-  const carousel = createCarousel(root, { slides: 'multiple', drag: true, loop: false });
+  // A thumbnail can link to its slide's id, which works without JavaScript. Once the controller runs,
+  // a plain click only scrolls the carousel, so the page does not jump to the slide.
+  const onClick = (event) => {
+    const link = event.target instanceof Element ? event.target.closest('a[data-slot="carousel-indicator"]') : null;
+    if (!link || link.closest('[data-slot="carousel"]') !== root) return;
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+  };
+  // A link to a slide or to something in it, such as a thumbnail followed before this module loaded,
+  // keeps that slide.
+  let hash = location.hash.slice(1);
+  try {
+    hash = decodeURIComponent(hash);
+  } catch {
+    // Keep a malformed hash as it is.
+  }
+  const target = hash ? document.getElementById(hash) : null;
+  const linked = target ? items().findIndex((item) => item.contains(target)) : -1;
+  const carousel = createCarousel(root, {
+    slides: 'multiple',
+    drag: true,
+    loop: false,
+    ...(linked >= 0 ? { defaultIndex: linked } : {}),
+  });
+  root.addEventListener('click', onClick);
   translate();
   for (const button of root.querySelectorAll('[data-slot="carousel-previous"], [data-slot="carousel-next"]'))
     button.hidden = false;
@@ -38,6 +62,7 @@ export function initializeCarousel(root) {
   carousel.destroy = () => {
     destroyed = true;
     observer.disconnect();
+    root.removeEventListener('click', onClick);
     destroy();
   };
   return carousel;

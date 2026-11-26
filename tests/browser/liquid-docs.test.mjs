@@ -155,7 +155,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         await page
           .locator("main section a[href^='/liquid/components/']")
           .count(),
-        58
+        60
       )
       await page.getByRole("button", { name: "Open menu", exact: true }).click()
       await page

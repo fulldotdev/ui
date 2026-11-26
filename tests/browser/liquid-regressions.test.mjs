@@ -157,3 +157,104 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
     }
   })
 }
+
+for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
+  test(`Liquid ${name}: number field buttons and gallery thumbnails`, async () => {
+    const browser = await type.launch()
+    try {
+      const page = await browser.newPage()
+      await page.goto(server.origin)
+      await page.locator('[data-slot="carousel"][data-enhanced]').waitFor()
+      await page.evaluate(() => {
+        const container = document.createElement("div")
+        container.id = "storefront-regression"
+        container.innerHTML = `
+          <div data-slot="number-field">
+            <div data-slot="input-group-addon">
+              <button type="button" data-slot="number-field-decrement" data-button data-variant="ghost" data-size="icon-xs" aria-label="Decrease">-</button>
+            </div>
+            <input data-slot="input" type="number" value="1" min="1" max="3" aria-label="Quantity">
+            <div data-slot="input-group-addon" data-align="inline-end">
+              <button type="button" data-slot="number-field-increment" data-button data-variant="ghost" data-size="icon-xs" aria-label="Increase">+</button>
+            </div>
+          </div>
+          <section data-slot="carousel" aria-label="Product images">
+            <div data-slot="carousel-content">
+              <div data-slot="carousel-item" id="gallery-1">One</div>
+              <div data-slot="carousel-item" id="gallery-2">Two</div>
+            </div>
+            <a data-slot="carousel-indicator" data-index="0" href="#gallery-1" aria-label="Show image 1">1</a>
+            <a data-slot="carousel-indicator" data-index="1" href="#gallery-2" aria-label="Show image 2">2</a>
+          </section>`
+        document.body.append(container)
+        const input = container.querySelector("input")
+        window.quantityEvents = []
+        for (const type of ["input", "change"])
+          input.addEventListener(type, () =>
+            window.quantityEvents.push(`${type} ${input.value}`)
+          )
+      })
+      const root = page.locator("#storefront-regression")
+      await root.locator('[data-slot="number-field"][data-enhanced]').waitFor()
+      const increase = root.getByRole("button", { name: "Increase" })
+      const decrease = root.getByRole("button", { name: "Decrease" })
+      // As in Base UI, a button is disabled at its bound.
+      assert.equal(await decrease.isDisabled(), true)
+      for (let click = 0; click < 2; click++) await increase.click()
+      assert.equal(await increase.isDisabled(), true)
+      await decrease.click()
+      assert.equal(await increase.isDisabled(), false)
+      assert.equal(
+        await root.getByRole("spinbutton", { name: "Quantity" }).inputValue(),
+        "2"
+      )
+      // A cart refresh can replace the buttons and input inside the root.
+      await root.locator('[data-slot="number-field"]').evaluate((field) => {
+        const markup = field.innerHTML
+        field.innerHTML = markup
+        const input = field.querySelector("input")
+        input.value = "2"
+        for (const type of ["input", "change"])
+          input.addEventListener(type, () =>
+            window.quantityEvents.push(`${type} ${input.value}`)
+          )
+      })
+      await root.getByRole("button", { name: "Increase" }).click()
+      assert.equal(
+        await root.getByRole("spinbutton", { name: "Quantity" }).inputValue(),
+        "3"
+      )
+      assert.deepEqual(await page.evaluate(() => window.quantityEvents), [
+        "input 2",
+        "change 2",
+        "input 3",
+        "change 3",
+        "input 2",
+        "change 2",
+        "input 3",
+        "change 3",
+      ])
+
+      await root.locator('[data-slot="carousel"][data-enhanced]').waitFor()
+      const current = () =>
+        root
+          .locator('[data-slot="carousel-indicator"][aria-current="true"]')
+          .getAttribute("aria-label")
+      assert.equal(await current(), "Show image 1")
+      await root.getByRole("link", { name: "Show image 2" }).click()
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector(
+              '#storefront-regression [data-slot="carousel-indicator"][data-index="1"]'
+            )
+            ?.getAttribute("aria-current") === "true"
+      )
+      assert.equal(await current(), "Show image 2")
+      // A plain click scrolls the carousel instead of following the link.
+      assert.equal(new URL(page.url()).hash, "")
+    } finally {
+      await browser.close()
+    }
+  })
+}

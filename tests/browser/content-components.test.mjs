@@ -327,6 +327,57 @@ for (const browserType of [chromium, firefox, webkit]) {
       }
     )
 
+    await t.test(
+      "number field buttons step the input and thumbnails show their slide",
+      async () => {
+        await page.goto(`${origin}/components/number-field/`)
+        const field = page.locator('[data-slot="number-field"]').first()
+        const increase = field.getByRole("button", {
+          name: "Increase quantity",
+        })
+        const decrease = field.getByRole("button", {
+          name: "Decrease quantity",
+        })
+        // As in Base UI, a button is disabled when a step would not change
+        // the value, here at min="1".
+        await page.waitForFunction(
+          () =>
+            document.querySelector('[data-slot="number-field-decrement"]')
+              ?.disabled === true
+        )
+        await field.getByRole("spinbutton").evaluate((input) => {
+          window.quantityEvents = []
+          for (const type of ["input", "change"])
+            input.addEventListener(type, () =>
+              window.quantityEvents.push(`${type} ${input.value}`)
+            )
+        })
+        await increase.click()
+        await increase.click()
+        await decrease.click()
+        assert.equal(await field.getByRole("spinbutton").inputValue(), "2")
+        assert.equal(await decrease.isDisabled(), false)
+        assert.deepEqual(await page.evaluate(() => window.quantityEvents), [
+          "input 2",
+          "change 2",
+          "input 3",
+          "change 3",
+          "input 2",
+          "change 2",
+        ])
+
+        await page.goto(`${origin}/components/carousel/`)
+        const gallery = page.getByRole("region", { name: "Product images" })
+        await gallery.getByRole("button", { name: "Show image 3" }).click()
+        await page.waitForFunction(
+          () =>
+            document
+              .querySelector('[data-carousel-indicator][data-index="2"]')
+              ?.getAttribute("aria-current") === "true"
+        )
+      }
+    )
+
     assert.deepEqual(errors, [])
   })
 }

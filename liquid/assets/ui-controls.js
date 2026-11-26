@@ -164,6 +164,116 @@ function initializeToaster({ createToast }, root) {
   };
 }
 
+// A number field's buttons step its native input, as its arrow keys do, and fire the input and change
+// events that typing fires, so a form or cart script sees one kind of change. As in Base UI, the
+// runtime disables them when a step would not change the value: at a bound, or while the input is
+// disabled or read-only. They follow new attributes, such as a variant's bounds, and markup a cart
+// refresh replaces; a script that sets the value property fires input or change. Disable the input
+// to disable the field. Without JavaScript the input still works on its own.
+function initializeNumberField(_, root) {
+  const events = new AbortController();
+  const options = { signal: events.signal };
+  const buttons = () =>
+    root.querySelectorAll('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]');
+  // Steps a detached copy, so min, max and step apply as the browser applies them.
+  const canStep = (input, decrement) => {
+    if (input.disabled || input.readOnly) return false;
+    const probe = input.cloneNode();
+    probe.value = input.value;
+    try {
+      if (decrement) probe.stepDown();
+      else probe.stepUp();
+    } catch {
+      return false;
+    }
+    return probe.value !== input.value;
+  };
+  // data-disabled marks a disabled field, as in Astro and React.
+  const sync = () => {
+    const input = root.querySelector('input');
+    if (!input) return;
+    if (input.disabled) root.setAttribute('data-disabled', 'true');
+    else root.removeAttribute('data-disabled');
+    for (const button of buttons()) {
+      // A step button never submits its form, also when the markup leaves out type='button'.
+      if (button.type !== 'button') button.type = 'button';
+      const disabled = !canStep(input, button.dataset.slot === 'number-field-decrement');
+      if (button.disabled !== disabled) button.disabled = disabled;
+    }
+  };
+  root.addEventListener(
+    'click',
+    (event) => {
+      const button =
+        event.target instanceof Element
+          ? event.target.closest('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]')
+          : null;
+      const input = root.querySelector('input');
+      if (!button || button.closest('[data-slot="number-field"]') !== root || button.disabled) return;
+      if (!input || input.disabled || input.readOnly) return;
+      const value = input.value;
+      try {
+        if (button.dataset.slot === 'number-field-decrement') input.stepDown();
+        else input.stepUp();
+      } catch {
+        return;
+      }
+      if (input.value !== value) {
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      sync();
+    },
+    options,
+  );
+  // Pressing a button keeps the focus on this field's input, so its typed value is not committed by a
+  // blur, and a cart that refreshes on change, before the click steps it. Another field still blurs.
+  root.addEventListener(
+    'mousedown',
+    (event) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]') &&
+        root.querySelector('input') === document.activeElement
+      )
+        event.preventDefault();
+    },
+    options,
+  );
+  // A pointer or focus that reaches the field first also syncs it, for a value a script set without an event.
+  for (const type of ['input', 'change', 'pointerover', 'focusin']) root.addEventListener(type, sync, options);
+  // A form reset restores the input after the event, also for an input in a form elsewhere.
+  document.addEventListener(
+    'reset',
+    (event) => {
+      if (root.querySelector('input')?.form === event.target)
+        setTimeout(() => {
+          if (!events.signal.aborted) sync();
+        });
+    },
+    options,
+  );
+  const observer = new MutationObserver((mutations) => {
+    if (mutations.some((mutation) => mutation.type === 'childList' || mutation.target instanceof HTMLInputElement))
+      sync();
+  });
+  observer.observe(root, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['min', 'max', 'step', 'value', 'disabled', 'readonly'],
+  });
+  sync();
+  return {
+    destroy() {
+      events.abort();
+      observer.disconnect();
+      for (const button of buttons()) button.disabled = false;
+      root.removeAttribute('data-disabled');
+    },
+  };
+}
+
 // Each entry loads its data-slot package, then starts one root with it and returns a controller
 // with destroy(). theme.js starts the root only if it is still current once the package has
 // loaded. Select, tooltip and hover card keep their closed content connected (eager), so nested
@@ -192,4 +302,6 @@ export const controls = {
   'alert-dialog': [() => import('@data-slot/alert-dialog'), initializeAlertDialog],
   drawer: [() => import('@data-slot/drawer'), ({ createDrawer }, root) => createDrawer(root)],
   toast: [() => import('@data-slot/toast'), initializeToaster],
+  // data-slot leaves a number field to the native input, so this entry loads no package.
+  'number-field': [async () => ({}), initializeNumberField],
 };

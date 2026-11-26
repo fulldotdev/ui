@@ -1,0 +1,36 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+import { cn } from "@/lib/utils"
+
+type Props = HTMLAttributes<"span"> & {
+  color?: string
+  image?: string
+}
+
+const { class: className, color, image, style, ...props } = Astro.props
+
+const background = {
+  "background-color": color,
+  "background-image": image ? `url(${JSON.stringify(image)})` : undefined,
+}
+const backgroundText = Object.entries(background)
+  .filter(([, value]) => value)
+  .map(([property, value]) => `${property}: ${value}`)
+  .join("; ")
+---
+
+<span
+  data-slot="swatch"
+  aria-hidden="true"
+  class={cn(
+    "cn-swatch inline-block size-4 shrink-0 bg-cover bg-center",
+    className
+  )}
+  style={
+    typeof style === "string"
+      ? [backgroundText, style].filter(Boolean).join("; ")
+      : { ...background, ...style }
+  }
+  {...props}
+/>

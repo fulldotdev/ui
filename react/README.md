@@ -2,7 +2,7 @@
 
 Fulldev extras and blocks for React projects that use [shadcn/ui](https://ui.shadcn.com) for Base UI. It extends shadcn/ui and does not replace it: the standard components, such as Button and Dialog, come from the official shadcn/ui registry and docs.
 
-- Extras: banner, header, icon, layout, logo, marquee, price, rating, section, theme toggle, table of contents, typography and video.
+- Extras: banner, carousel indicator, header, icon, layout, logo, marquee, number field, price, rating, section, swatch, theme toggle, table of contents, typography and video.
 - Blocks: every Fulldev UI block, as `.tsx` files.
 
 Docs: [ui.full.dev/react](https://ui.full.dev/react/).
