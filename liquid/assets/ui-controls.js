@@ -219,8 +219,8 @@ function initializeNumberField(_, root) {
     },
     options,
   );
-  root.addEventListener('input', sync, options);
-  root.addEventListener('change', sync, options);
+  // A pointer or focus that reaches the field first also syncs it, for a value a script set without an event.
+  for (const type of ['input', 'change', 'pointerover', 'focusin']) root.addEventListener(type, sync, options);
   // A form reset restores the input after the event, also for an input in a form elsewhere.
   document.addEventListener(
     'reset',

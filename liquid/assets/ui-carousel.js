@@ -38,14 +38,16 @@ export function initializeCarousel(root) {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
   };
-  // A link to a slide, such as a thumbnail followed before this module loaded, keeps that slide.
+  // A link to a slide or to something in it, such as a thumbnail followed before this module loaded,
+  // keeps that slide.
   let hash = location.hash.slice(1);
   try {
     hash = decodeURIComponent(hash);
   } catch {
     // Keep a malformed hash as it is.
   }
-  const linked = hash && root.dataset.defaultIndex === undefined ? items().findIndex((item) => item.id === hash) : -1;
+  const target = hash ? document.getElementById(hash) : null;
+  const linked = target ? items().findIndex((item) => item.contains(target)) : -1;
   const carousel = createCarousel(root, {
     slides: 'multiple',
     drag: true,
