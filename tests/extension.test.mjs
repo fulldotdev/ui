@@ -15,14 +15,17 @@ const pages = (dir) =>
 
 const extras = [
   "banner",
+  "carousel-indicator",
   "header",
   "icon",
   "layout",
   "logo",
   "marquee",
+  "number-field",
   "price",
   "rating",
   "section",
+  "swatch",
   "theme-toggle",
   "toc",
   "typography",

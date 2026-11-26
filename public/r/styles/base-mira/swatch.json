@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "swatch",
+  "title": "Swatch",
+  "description": "A color or pattern beside an option or filter value.",
+  "files": [
+    {
+      "path": "src/components/ui/swatch/swatch.astro",
+      "content": "---\nimport type { HTMLAttributes } from \"astro/types\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Props = HTMLAttributes<\"span\"> & {\n  color?: string\n  image?: string\n}\n\nconst { class: className, color, image, style, ...props } = Astro.props\n\nconst background = {\n  \"background-color\": color,\n  \"background-image\": image ? `url(${JSON.stringify(image)})` : undefined,\n}\nconst backgroundText = Object.entries(background)\n  .filter(([, value]) => value)\n  .map(([property, value]) => `${property}: ${value}`)\n  .join(\"; \")\n---\n\n<span\n  data-slot=\"swatch\"\n  aria-hidden=\"true\"\n  class={cn(\n    \"rounded-full ring-1 ring-foreground/15 ring-inset inline-block size-4 shrink-0 bg-cover bg-center\",\n    className\n  )}\n  style={\n    typeof style === \"string\"\n      ? [backgroundText, style].filter(Boolean).join(\"; \")\n      : { ...background, ...style }\n  }\n  {...props}\n/>\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/swatch/index.ts",
+      "content": "export { default as Swatch } from \"./swatch.astro\"\n",
+      "type": "registry:ui"
+    }
+  ],
+  "docs": "https://ui.full.dev/components/swatch/",
+  "categories": [
+    "ui"
+  ],
+  "type": "registry:ui"
+}

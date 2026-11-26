@@ -1,0 +1,58 @@
+---
+import type { ComponentProps } from "astro/types"
+
+import { cn } from "@/lib/utils"
+import { InputGroup } from "@/components/ui/input-group"
+
+type Props = ComponentProps<typeof InputGroup>
+
+const { class: className, ...props } = Astro.props
+---
+
+<InputGroup
+  data-slot="number-field"
+  class={cn(
+    "has-[[data-slot=number-field-input]:focus-visible]:border-ring has-[[data-slot=number-field-input]:focus-visible]:ring-ring/50 w-32 has-[[data-slot=number-field-input]:focus-visible]:ring-3",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</InputGroup>
+
+<script>
+  // The buttons step the native input as its arrow keys do and fire the
+  // input and change events that typing fires. Without JavaScript the input
+  // still works on its own.
+  if (!document.documentElement.dataset.numberFieldBound) {
+    document.documentElement.dataset.numberFieldBound = "true"
+
+    document.addEventListener("click", (event) => {
+      const target = event.target
+      if (!(target instanceof Element)) return
+
+      const button = target.closest(
+        '[data-slot="number-field-decrement"], [data-slot="number-field-increment"]'
+      )
+      if (!(button instanceof HTMLButtonElement) || button.disabled) return
+
+      const input = button
+        .closest('[data-slot="number-field"]')
+        ?.querySelector('[data-slot="number-field-input"]')
+      if (!(input instanceof HTMLInputElement)) return
+      if (input.disabled || input.readOnly) return
+
+      const value = input.value
+      try {
+        if (button.dataset.slot === "number-field-decrement") input.stepDown()
+        else input.stepUp()
+      } catch {
+        return
+      }
+      if (input.value === value) return
+
+      input.dispatchEvent(new Event("input", { bubbles: true }))
+      input.dispatchEvent(new Event("change", { bubbles: true }))
+    })
+  }
+</script>

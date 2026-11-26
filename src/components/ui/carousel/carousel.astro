@@ -72,6 +72,7 @@ const resolvedOpts: EmblaOptionsType = {
       root.__fulldevCarouselApi = api
       const previous = getParts<HTMLButtonElement>(root, "previous")
       const next = getParts<HTMLButtonElement>(root, "next")
+      const indicators = getParts<HTMLElement>(root, "indicator")
       const emit = (type: "carousel:init" | "carousel:select") => {
         root.dispatchEvent(
           new CustomEvent(type, {
@@ -95,12 +96,37 @@ const resolvedOpts: EmblaOptionsType = {
         for (const button of next)
           if (button.dataset.manualDisabled !== "true")
             button.disabled = !api.canScrollNext()
+        const selected = api.selectedScrollSnap()
+        for (const indicator of indicators) {
+          const active = Number(indicator.dataset.index) === selected
+          indicator.dataset.state = active ? "active" : "inactive"
+          if (active) indicator.setAttribute("aria-current", "true")
+          else indicator.removeAttribute("aria-current")
+        }
         emit("carousel:select")
       }
       const jump = () =>
         window.matchMedia("(prefers-reduced-motion: reduce)").matches
       const onPrevious = () => api.scrollPrev(jump())
       const onNext = () => api.scrollNext(jump())
+      // An indicator that links to its slide scrolls the carousel on a plain
+      // click instead of moving the page.
+      const onIndicator = (event: MouseEvent) => {
+        const indicator = event.currentTarget as HTMLElement
+        const index = Number(indicator.dataset.index)
+        if (!Number.isInteger(index)) return
+        if (
+          indicator instanceof HTMLAnchorElement &&
+          (event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey)
+        )
+          return
+        event.preventDefault()
+        api.scrollTo(index, jump())
+      }
       const onKeyDown = (event: KeyboardEvent) => {
         const target = event.target
         if (
@@ -134,6 +160,8 @@ const resolvedOpts: EmblaOptionsType = {
       for (const button of previous)
         button.addEventListener("click", onPrevious)
       for (const button of next) button.addEventListener("click", onNext)
+      for (const indicator of indicators)
+        indicator.addEventListener("click", onIndicator)
       root.addEventListener("keydown", onKeyDown)
       api.on("select", sync)
       api.on("reInit", sync)
@@ -144,6 +172,8 @@ const resolvedOpts: EmblaOptionsType = {
         for (const button of previous)
           button.removeEventListener("click", onPrevious)
         for (const button of next) button.removeEventListener("click", onNext)
+        for (const indicator of indicators)
+          indicator.removeEventListener("click", onIndicator)
         root.removeEventListener("keydown", onKeyDown)
         api.off("select", sync)
         api.off("reInit", sync)

@@ -164,6 +164,34 @@ function initializeToaster({ createToast }, root) {
   };
 }
 
+// A number field's buttons step its native input, as its arrow keys do, and fire the input and change
+// events that typing fires, so a form or cart script sees one kind of change. Without JavaScript the
+// input still works on its own.
+function initializeNumberField(_, root) {
+  const input = root.querySelector('[data-slot="number-field-input"]');
+  const events = new AbortController();
+  const step = (direction) => {
+    if (!input || input.disabled || input.readOnly) return;
+    const value = input.value;
+    try {
+      if (direction < 0) input.stepDown();
+      else input.stepUp();
+    } catch {
+      return;
+    }
+    if (input.value === value) return;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+  for (const [slot, direction] of [
+    ['number-field-decrement', -1],
+    ['number-field-increment', 1],
+  ])
+    for (const button of root.querySelectorAll(`[data-slot="${slot}"]`))
+      button.addEventListener('click', () => step(direction), { signal: events.signal });
+  return { destroy: () => events.abort() };
+}
+
 // Each entry loads its data-slot package, then starts one root with it and returns a controller
 // with destroy(). theme.js starts the root only if it is still current once the package has
 // loaded. Select, tooltip and hover card keep their closed content connected (eager), so nested
@@ -192,4 +220,6 @@ export const controls = {
   'alert-dialog': [() => import('@data-slot/alert-dialog'), initializeAlertDialog],
   drawer: [() => import('@data-slot/drawer'), ({ createDrawer }, root) => createDrawer(root)],
   toast: [() => import('@data-slot/toast'), initializeToaster],
+  // data-slot leaves a number field to the native input, so this entry loads no package.
+  'number-field': [async () => ({}), initializeNumberField],
 };

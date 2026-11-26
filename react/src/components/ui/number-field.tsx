@@ -1,0 +1,83 @@
+"use client"
+
+import * as React from "react"
+import { NumberField as NumberFieldPrimitive } from "@base-ui/react/number-field"
+import { cn } from "cn"
+import { MinusIcon, PlusIcon } from "lucide-react"
+
+import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group"
+
+function NumberField({ className, ...props }: NumberFieldPrimitive.Root.Props) {
+  return (
+    <NumberFieldPrimitive.Root
+      data-slot="number-field"
+      role="group"
+      className={cn(
+        "group/input-group cn-input-group relative flex w-32 min-w-0 items-center outline-none has-[[data-slot=number-field-input]:focus-visible]:border-ring has-[[data-slot=number-field-input]:focus-visible]:ring-3 has-[[data-slot=number-field-input]:focus-visible]:ring-ring/50",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function NumberFieldInput({
+  className,
+  ...props
+}: NumberFieldPrimitive.Input.Props) {
+  return (
+    <NumberFieldPrimitive.Input
+      data-slot="number-field-input"
+      className={cn(
+        "cn-input cn-input-group-input w-full min-w-0 flex-1 text-center tabular-nums outline-none placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function NumberFieldDecrement({
+  children,
+  "aria-label": ariaLabel = "Decrease",
+  ...props
+}: NumberFieldPrimitive.Decrement.Props) {
+  return (
+    <InputGroupAddon align="inline-start">
+      <NumberFieldPrimitive.Decrement
+        data-slot="number-field-decrement"
+        aria-label={ariaLabel}
+        render={<InputGroupButton size="icon-xs" />}
+        {...props}
+      >
+        {children ?? <MinusIcon aria-hidden="true" />}
+      </NumberFieldPrimitive.Decrement>
+    </InputGroupAddon>
+  )
+}
+
+function NumberFieldIncrement({
+  children,
+  "aria-label": ariaLabel = "Increase",
+  ...props
+}: NumberFieldPrimitive.Increment.Props) {
+  return (
+    <InputGroupAddon align="inline-end">
+      <NumberFieldPrimitive.Increment
+        data-slot="number-field-increment"
+        aria-label={ariaLabel}
+        render={<InputGroupButton size="icon-xs" />}
+        {...props}
+      >
+        {children ?? <PlusIcon aria-hidden="true" />}
+      </NumberFieldPrimitive.Increment>
+    </InputGroupAddon>
+  )
+}
+
+export {
+  NumberField,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+}
