@@ -11,9 +11,9 @@ export default function Demo() {
     <div className="flex flex-col gap-10 p-6">
       <div className="flex flex-col gap-2">
         <Label htmlFor="quantity">Quantity</Label>
-        <NumberField name="quantity" defaultValue={1} min={1}>
+        <NumberField id="quantity" name="quantity" defaultValue={1} min={1}>
           <NumberFieldDecrement aria-label="Decrease quantity" />
-          <NumberFieldInput id="quantity" />
+          <NumberFieldInput />
           <NumberFieldIncrement aria-label="Increase quantity" />
         </NumberField>
       </div>
