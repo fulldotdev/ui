@@ -1,5 +1,11 @@
 # Fulldev UI
 
+## 0.27.1
+
+### Patch Changes
+
+- [#346](https://github.com/fulldotdev/ui/pull/346) [`e3b5a89`](https://github.com/fulldotdev/ui/commit/e3b5a89984888310484b84124e68702753dea4d1) Thanks [@silveltman](https://github.com/silveltman)! - In Liquid, a carousel with `data-slides='single'` exposes only its shown slide to the keyboard and screen readers, as a product gallery needs. Before, a gallery whose width had a fraction of a pixel also exposed the next slide at load. Without the attribute, every slide in view stays exposed, as in a row of cards. A Liquid rating can now show part of a star: a `rating__fill` with a width, such as 50%, clips its star instead of shrinking it.
+
 ## 0.27.0
 
 ### Minor Changes
