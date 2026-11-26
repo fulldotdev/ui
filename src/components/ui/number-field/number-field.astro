@@ -119,17 +119,19 @@ const { class: className, ...props } = Astro.props
       }
       sync(root)
     })
-    // Pressing a button keeps the focus where it is, so a typed value is not
-    // committed by a blur, and a form that refreshes on change, before the
-    // click steps it.
+    // Pressing a button keeps the focus on its field's input, so the typed
+    // value is not committed by a blur, and a form that refreshes on change,
+    // before the click steps it. Another field still blurs.
     document.addEventListener("mousedown", (event) => {
-      if (
+      const button =
         event.target instanceof Element &&
         event.target.closest(
           '[data-slot="number-field-decrement"], [data-slot="number-field-increment"]'
         )
-      )
-        event.preventDefault()
+      const input = button
+        ? button.closest('[data-slot="number-field"]')?.querySelector("input")
+        : null
+      if (input && input === document.activeElement) event.preventDefault()
     })
     // A pointer or focus that reaches the field first also syncs it, for a
     // field added later or a value a script set without an event.

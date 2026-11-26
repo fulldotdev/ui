@@ -90,19 +90,10 @@ const resolvedOpts: EmblaOptionsType = {
           })
         )
       }
-      const sync = () => {
-        root.dataset.canScrollPrev = String(api.canScrollPrev())
-        root.dataset.canScrollNext = String(api.canScrollNext())
-        root.dataset.selectedScrollSnap = String(api.selectedScrollSnap())
-        for (const button of previous)
-          if (button.dataset.manualDisabled !== "true")
-            button.disabled = !api.canScrollPrev()
-        for (const button of next)
-          if (button.dataset.manualDisabled !== "true")
-            button.disabled = !api.canScrollNext()
-        // As in data-slot, an indicator without a scroll position, such as
-        // the last thumbnails when several slides show, is hidden, and all
-        // are while Embla is inactive at the current breakpoint.
+      // As in data-slot, an indicator without a scroll position, such as the
+      // last thumbnails when several slides show, is hidden, and all are while
+      // Embla is inactive at the current breakpoint.
+      const markIndicators = () => {
         const selected = active() ? api.selectedScrollSnap() : -1
         const positions = api.scrollSnapList().length
         for (const indicator of indicators()) {
@@ -113,6 +104,18 @@ const resolvedOpts: EmblaOptionsType = {
           if (current) indicator.setAttribute("aria-current", "true")
           else indicator.removeAttribute("aria-current")
         }
+      }
+      const sync = () => {
+        root.dataset.canScrollPrev = String(api.canScrollPrev())
+        root.dataset.canScrollNext = String(api.canScrollNext())
+        root.dataset.selectedScrollSnap = String(api.selectedScrollSnap())
+        for (const button of previous)
+          if (button.dataset.manualDisabled !== "true")
+            button.disabled = !api.canScrollPrev()
+        for (const button of next)
+          if (button.dataset.manualDisabled !== "true")
+            button.disabled = !api.canScrollNext()
+        markIndicators()
         emit("carousel:select")
       }
       const jump = () =>
@@ -126,6 +129,9 @@ const resolvedOpts: EmblaOptionsType = {
         if (!indicator || indicator.closest(rootSelector) !== root) return
         const index = Number(indicator.dataset.index)
         if (Number.isInteger(index) && index >= 0) api.scrollTo(index, jump())
+        // Thumbnails a variant change replaced are marked, also when the
+        // slide did not change.
+        markIndicators()
       }
       const onKeyDown = (event: KeyboardEvent) => {
         const target = event.target

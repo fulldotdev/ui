@@ -11,7 +11,9 @@ function NumberField({
   className,
   disabled,
   ...props
-}: NumberFieldPrimitive.Root.Props) {
+}: Omit<NumberFieldPrimitive.Root.Props, "className"> & {
+  className?: string
+}) {
   return (
     <NumberFieldPrimitive.Root
       data-slot="number-field"
@@ -30,7 +32,9 @@ function NumberField({
 function NumberFieldInput({
   className,
   ...props
-}: NumberFieldPrimitive.Input.Props) {
+}: Omit<NumberFieldPrimitive.Input.Props, "className"> & {
+  className?: string
+}) {
   return (
     <NumberFieldPrimitive.Input
       data-slot="input-group-control"

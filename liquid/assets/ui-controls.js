@@ -195,6 +195,8 @@ function initializeNumberField(_, root) {
     if (input.disabled) root.setAttribute('data-disabled', 'true');
     else root.removeAttribute('data-disabled');
     for (const button of buttons()) {
+      // A step button never submits its form, also when the markup leaves out type='button'.
+      if (!button.hasAttribute('type')) button.type = 'button';
       const disabled = !canStep(input, button.dataset.slot === 'number-field-decrement');
       if (button.disabled !== disabled) button.disabled = disabled;
     }
@@ -224,14 +226,15 @@ function initializeNumberField(_, root) {
     },
     options,
   );
-  // Pressing a button keeps the focus where it is, so a typed value is not committed by a blur, and a
-  // cart that refreshes on change, before the click steps it.
+  // Pressing a button keeps the focus on this field's input, so its typed value is not committed by a
+  // blur, and a cart that refreshes on change, before the click steps it. Another field still blurs.
   root.addEventListener(
     'mousedown',
     (event) => {
       if (
         event.target instanceof Element &&
-        event.target.closest('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]')
+        event.target.closest('[data-slot="number-field-decrement"], [data-slot="number-field-increment"]') &&
+        root.querySelector('input') === document.activeElement
       )
         event.preventDefault();
     },
