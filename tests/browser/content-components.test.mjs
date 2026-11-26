@@ -327,6 +327,29 @@ for (const browserType of [chromium, firefox, webkit]) {
       }
     )
 
+    await t.test(
+      "number field buttons step the input and thumbnails show their slide",
+      async () => {
+        await page.goto(`${origin}/components/number-field/`)
+        const field = page.locator('[data-slot="number-field"]').first()
+        await field.getByRole("button", { name: "Increase quantity" }).click()
+        await field.getByRole("button", { name: "Increase quantity" }).click()
+        await field.getByRole("button", { name: "Decrease quantity" }).click()
+        assert.equal(await field.getByRole("spinbutton").inputValue(), "2")
+
+        await page.goto(`${origin}/components/carousel/`)
+        const gallery = page.getByRole("region", { name: "Product images" })
+        await gallery.getByRole("link", { name: "Show image 3" }).click()
+        await page.waitForFunction(
+          () =>
+            document
+              .querySelector('[data-carousel-indicator][data-index="2"]')
+              ?.getAttribute("aria-current") === "true"
+        )
+        assert.equal(new URL(page.url()).hash, "")
+      }
+    )
+
     assert.deepEqual(errors, [])
   })
 }

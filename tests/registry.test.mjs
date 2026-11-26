@@ -75,19 +75,23 @@ test("menu surfaces carry the shadcn/ui menu hooks", () => {
 })
 
 // The shadcn CLI's own menu transform, on one className string. It takes a
-// ts-morph source file; this one holds a single className attribute.
+// source file with its text; this one holds a single className attribute.
 async function shadcnMenu(classes, menuColor) {
-  let text = `"${classes}"`
-  const attribute = {
-    getNameNode: () => ({ getText: () => "className" }),
-    getInitializer: () => ({ getText: () => text }),
-    setInitializer: (value) => (text = value),
-  }
+  let text = `export const a = <div className="${classes}" />\n`
   await transformMenu({
-    sourceFile: { getDescendantsOfKind: () => [attribute] },
+    sourceFile: {
+      getFullText: () => text,
+      applyTextChanges: (changes) => {
+        for (const { span, newText } of changes)
+          text =
+            text.slice(0, span.start) +
+            newText +
+            text.slice(span.start + span.length)
+      },
+    },
     config: { menuColor },
   })
-  return text.slice(1, -1)
+  return text.match(/className="([^"]*)"/)[1]
 }
 
 test("menu colors give the classes the shadcn CLI installs", async () => {

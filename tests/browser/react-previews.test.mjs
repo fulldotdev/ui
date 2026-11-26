@@ -229,3 +229,39 @@ test("a header's mobile menu fits its preview frame", async () => {
   }
   await page.close()
 })
+
+test("the React number field and carousel indicator work in their previews", async () => {
+  const page = await browser.newPage()
+  try {
+    const frameWith = async (selector) => {
+      await page.waitForFunction(
+        (selector) =>
+          Array.from(
+            { length: frames.length },
+            (_, index) => frames[index]
+          ).some((frame) => frame.document.querySelector(selector)),
+        selector
+      )
+      for (const frame of page.frames())
+        if (await frame.locator(selector).count()) return frame
+    }
+    await page.goto(`${origin}/react/components/number-field/`)
+    const field = await frameWith("[data-slot=number-field]")
+    await field.getByRole("button", { name: "Increase quantity" }).click()
+    assert.equal(
+      await field.getByRole("textbox", { name: "Quantity" }).inputValue(),
+      "2"
+    )
+    await page.goto(`${origin}/react/components/carousel-indicator/`)
+    const gallery = await frameWith("[data-slot=carousel-indicator]")
+    await gallery.getByRole("button", { name: "Show image 3" }).click()
+    await gallery.waitForFunction(
+      () =>
+        document
+          .querySelector('[data-slot=carousel-indicator][data-index="2"]')
+          ?.getAttribute("aria-current") === "true"
+    )
+  } finally {
+    await page.close()
+  }
+})
