@@ -188,9 +188,12 @@ function initializeNumberField(_, root) {
     }
     return probe.value !== input.value;
   };
+  // data-disabled marks a disabled field, as in Astro and React.
   const sync = () => {
     const input = root.querySelector('input');
     if (!input) return;
+    if (input.disabled) root.setAttribute('data-disabled', 'true');
+    else root.removeAttribute('data-disabled');
     for (const button of buttons()) {
       const disabled = !canStep(input, button.dataset.slot === 'number-field-decrement');
       if (button.disabled !== disabled) button.disabled = disabled;
@@ -258,6 +261,7 @@ function initializeNumberField(_, root) {
       events.abort();
       observer.disconnect();
       for (const button of buttons()) button.disabled = false;
+      root.removeAttribute('data-disabled');
     },
   };
 }
