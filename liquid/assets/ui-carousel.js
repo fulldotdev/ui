@@ -48,8 +48,11 @@ export function initializeCarousel(root) {
   }
   const target = hash ? document.getElementById(hash) : null;
   const linked = target ? items().findIndex((item) => item.contains(target)) : -1;
+  // A row of cards exposes every card that is in view. A gallery that shows one slide at a time sets
+  // data-slides='single', so only the shown slide is exposed, also when a fractional width leaves a
+  // sliver of the next one in view.
   const carousel = createCarousel(root, {
-    slides: 'multiple',
+    slides: root.dataset.slides === 'single' ? 'single' : 'multiple',
     drag: true,
     loop: false,
     ...(linked >= 0 ? { defaultIndex: linked } : {}),

@@ -178,14 +178,22 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
               <button type="button" data-slot="number-field-increment" data-button data-variant="ghost" data-size="icon-xs" aria-label="Increase">+</button>
             </div>
           </div>
-          <section data-slot="carousel" aria-label="Product images">
+          <section data-slot="carousel" data-slides="single" aria-label="Product images" style="width:300.6px;--gutter:0px">
             <div data-slot="carousel-content">
               <div data-slot="carousel-item" id="gallery-1">One</div>
               <div data-slot="carousel-item" id="gallery-2">Two</div>
             </div>
             <a data-slot="carousel-indicator" data-index="0" href="#gallery-1" aria-label="Show image 1">1</a>
             <a data-slot="carousel-indicator" data-index="1" href="#gallery-2" aria-label="Show image 2">2</a>
-          </section>`
+          </section>
+          <span data-slot="rating" role="img" aria-label="Rated 4.5 out of 5">
+            <span class="rating__star" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z"/></svg>
+              <span class="rating__fill" style="width: 50%">
+                <svg viewBox="0 0 24 24"><path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z"/></svg>
+              </span>
+            </span>
+          </span>`
         document.body.append(container)
         const input = container.querySelector("input")
         window.quantityEvents = []
@@ -195,6 +203,18 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
           )
       })
       const root = page.locator("#storefront-regression")
+      // A partial fill clips its star instead of shrinking it.
+      assert.deepEqual(
+        await root.locator(".rating__star").evaluate((star) => {
+          const width = (element) => element.getBoundingClientRect().width
+          const fill = star.querySelector(".rating__fill")
+          return [
+            width(fill) / width(star),
+            width(fill.querySelector("svg")) / width(star),
+          ]
+        }),
+        [0.5, 1]
+      )
       await root.locator('[data-slot="number-field"][data-enhanced]').waitFor()
       const increase = root.getByRole("button", { name: "Increase" })
       const decrease = root.getByRole("button", { name: "Decrease" })
@@ -241,6 +261,17 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
           .locator('[data-slot="carousel-indicator"][aria-current="true"]')
           .getAttribute("aria-label")
       assert.equal(await current(), "Show image 1")
+      // One slide at a time: a sliver of the next one in a fractional width stays hidden.
+      const exposed = () =>
+        root
+          .locator('[data-slot="carousel-item"]')
+          .evaluateAll((items) =>
+            items.map(
+              (item) =>
+                !item.inert && item.getAttribute("aria-hidden") !== "true"
+            )
+          )
+      assert.deepEqual(await exposed(), [true, false])
       await root.getByRole("link", { name: "Show image 2" }).click()
       await page.waitForFunction(
         () =>
@@ -251,6 +282,7 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
             ?.getAttribute("aria-current") === "true"
       )
       assert.equal(await current(), "Show image 2")
+      assert.deepEqual(await exposed(), [false, true])
       // A plain click scrolls the carousel instead of following the link.
       assert.equal(new URL(page.url()).hash, "")
     } finally {
