@@ -9,9 +9,12 @@ type Props = Omit<ComponentProps<typeof InputGroupInput>, "type">
 const { class: className, step, min, inputmode, ...props } = Astro.props
 // A field that cannot go below 0 gets the numeric keypad, or the decimal one
 // for fractions. Others keep the browser's keyboard, which has a minus key.
-const unsigned = min !== undefined && Number(min) >= 0
-const whole =
-  Number.isInteger(Number(step ?? 1)) && Number.isInteger(Number(min))
+const bound =
+  min === undefined || min === null || String(min).trim() === ""
+    ? Number.NaN
+    : Number(min)
+const unsigned = bound >= 0
+const whole = Number.isInteger(Number(step ?? 1)) && Number.isInteger(bound)
 const keypad = unsigned ? (whole ? "numeric" : "decimal") : undefined
 ---
 
