@@ -196,7 +196,7 @@ function initializeNumberField(_, root) {
     else root.removeAttribute('data-disabled');
     for (const button of buttons()) {
       // A step button never submits its form, also when the markup leaves out type='button'.
-      if (!button.hasAttribute('type')) button.type = 'button';
+      if (button.type !== 'button') button.type = 'button';
       const disabled = !canStep(input, button.dataset.slot === 'number-field-decrement');
       if (button.disabled !== disabled) button.disabled = disabled;
     }
