@@ -57,7 +57,12 @@ function NumberFieldDecrement({
       <NumberFieldPrimitive.Decrement
         data-slot="number-field-decrement"
         aria-label={ariaLabel}
-        render={<InputGroupButton size="icon-xs" />}
+        render={
+          <InputGroupButton
+            size="icon-xs"
+            className="aria-disabled:pointer-events-none aria-disabled:opacity-50"
+          />
+        }
         {...props}
       >
         {children ?? <MinusIcon aria-hidden="true" />}
@@ -76,7 +81,12 @@ function NumberFieldIncrement({
       <NumberFieldPrimitive.Increment
         data-slot="number-field-increment"
         aria-label={ariaLabel}
-        render={<InputGroupButton size="icon-xs" />}
+        render={
+          <InputGroupButton
+            size="icon-xs"
+            className="aria-disabled:pointer-events-none aria-disabled:opacity-50"
+          />
+        }
         {...props}
       >
         {children ?? <PlusIcon aria-hidden="true" />}
