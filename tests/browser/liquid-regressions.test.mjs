@@ -185,7 +185,15 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
             </div>
             <a data-slot="carousel-indicator" data-index="0" href="#gallery-1" aria-label="Show image 1">1</a>
             <a data-slot="carousel-indicator" data-index="1" href="#gallery-2" aria-label="Show image 2">2</a>
-          </section>`
+          </section>
+          <span data-slot="rating" role="img" aria-label="Rated 4.5 out of 5">
+            <span class="rating__star" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z"/></svg>
+              <span class="rating__fill" style="width: 50%">
+                <svg viewBox="0 0 24 24"><path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z"/></svg>
+              </span>
+            </span>
+          </span>`
         document.body.append(container)
         const input = container.querySelector("input")
         window.quantityEvents = []
@@ -195,6 +203,18 @@ for (const [name, type] of Object.entries({ chromium, firefox, webkit })) {
           )
       })
       const root = page.locator("#storefront-regression")
+      // A partial fill clips its star instead of shrinking it.
+      assert.deepEqual(
+        await root.locator(".rating__star").evaluate((star) => {
+          const width = (element) => element.getBoundingClientRect().width
+          const fill = star.querySelector(".rating__fill")
+          return [
+            width(fill) / width(star),
+            width(fill.querySelector("svg")) / width(star),
+          ]
+        }),
+        [0.5, 1]
+      )
       await root.locator('[data-slot="number-field"][data-enhanced]').waitFor()
       const increase = root.getByRole("button", { name: "Increase" })
       const decrease = root.getByRole("button", { name: "Decrease" })
